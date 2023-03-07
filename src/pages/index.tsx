@@ -99,7 +99,7 @@ export default function Home() {
               {loading
                 ? 'Loading...'
                 : result === ''
-                ? 'あなたのEmailから AI がかっこいいニックネームを考えてくれます。入力して Submit してください。'
+                ? 'あなたの Email や ID から AI がかっこいいニックネームを考えてくれます。入力して Submit してください。'
                 : nl2br(result)}
             </Box>
           </Stack>
