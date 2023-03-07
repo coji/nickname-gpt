@@ -17,6 +17,7 @@
     "@types/react-dom": "18.0.11",
     "eslint": "8.35.0",
     "eslint-config-next": "13.2.3",
+    "eventsource-parser": "^0.1.0",
     "framer-motion": "^10.1.0",
     "next": "13.2.3",
     "openai": "^3.2.1",

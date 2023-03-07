@@ -24,30 +24,44 @@ interface FormProps {
 }
 export default function Home() {
   const { register, handleSubmit } = useForm<FormProps>()
-  const [result, setResult] = useState('Email を入力して Submit してください')
+  const [result, setResult] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const handleFormSubmit = async (data: FormProps) => {
+  const handleFormSubmit = async (form: FormProps) => {
     setLoading(true)
 
-    const ret = await fetch('/api/hello', {
+    const response = await fetch('/api/generate', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        request: data.email,
+        email: form.email,
       }),
     })
 
     setLoading(false)
-    if (!ret.ok) {
-      setResult('Error')
+    if (!response.ok) {
+      throw new Error(response.statusText)
+    }
+
+    const data = response.body
+    if (!data) {
       return
     }
 
-    const apiRes = (await ret.json()) as Data
-    setResult(apiRes.result)
+    const reader = data.getReader()
+    const decoder = new TextDecoder()
+    let done = false
+
+    while (!done) {
+      const { value, done: doneReading } = await reader.read()
+      done = doneReading
+      const chunkValue = decoder.decode(value)
+      setResult((prev) => prev + chunkValue)
+    }
+
+    setLoading(false)
   }
 
   return (
@@ -81,7 +95,13 @@ export default function Home() {
               </FormControl>
             </form>
 
-            <Box>{loading ? 'Loading...' : nl2br(result)}</Box>
+            <Box>
+              {loading
+                ? 'Loading...'
+                : result === ''
+                ? 'Email を入力して Submit してください'
+                : nl2br(result)}
+            </Box>
           </Stack>
         </Box>
 
