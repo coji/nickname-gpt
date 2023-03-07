@@ -13,7 +13,7 @@ import {
 } from '@chakra-ui/react'
 import { Inter } from 'next/font/google'
 import { useForm } from 'react-hook-form'
-import { useState, useRef, useEffect } from 'react'
+import { useState } from 'react'
 import nl2br from 'react-nl2br'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -25,13 +25,6 @@ export default function Home() {
   const { register, handleSubmit } = useForm<FormProps>()
   const [result, setResult] = useState('')
   const [loading, setLoading] = useState(false)
-  const inputElement = useRef<HTMLInputElement>(null)
-
-  useEffect(() => {
-    if (inputElement.current) {
-      inputElement.current.focus()
-    }
-  }, [])
 
   const handleFormSubmit = async (form: FormProps) => {
     setLoading(true)
@@ -94,7 +87,7 @@ export default function Home() {
               <FormControl id="email">
                 <FormLabel>Email:</FormLabel>
                 <HStack>
-                  <Input {...register('email')} ref={inputElement} />
+                  <Input autoFocus {...register('email')} />
                   <Button type="submit" colorScheme="blue" isLoading={loading}>
                     Submit
                   </Button>
