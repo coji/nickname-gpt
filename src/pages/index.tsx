@@ -14,7 +14,6 @@ import {
 import { Inter } from 'next/font/google'
 import { useForm } from 'react-hook-form'
 import { useState } from 'react'
-import type { Data } from './api/hello'
 import nl2br from 'react-nl2br'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -29,6 +28,7 @@ export default function Home() {
 
   const handleFormSubmit = async (form: FormProps) => {
     setLoading(true)
+    setResult('')
 
     const response = await fetch('/api/generate', {
       method: 'POST',
