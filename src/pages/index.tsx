@@ -19,7 +19,7 @@ import nl2br from 'react-nl2br'
 const inter = Inter({ subsets: ['latin'] })
 
 interface FormProps {
-  email: string
+  input: string
 }
 export default function Home() {
   const { register, handleSubmit } = useForm<FormProps>()
@@ -36,7 +36,7 @@ export default function Home() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        email: form.email,
+        input: form.input,
       }),
     })
 
@@ -84,10 +84,14 @@ export default function Home() {
         <Box h="full" p="2">
           <Stack>
             <form onSubmit={handleSubmit(handleFormSubmit)}>
-              <FormControl id="email">
-                <FormLabel>Email:</FormLabel>
+              <FormControl id="input">
+                <FormLabel>Input</FormLabel>
                 <HStack>
-                  <Input autoFocus {...register('email')} />
+                  <Input
+                    autoFocus
+                    {...register('input')}
+                    placeholder="ニックネームの元になるメールアドレスやIDを入力してください"
+                  />
                   <Button type="submit" colorScheme="blue" isLoading={loading}>
                     Submit
                   </Button>
@@ -99,7 +103,7 @@ export default function Home() {
               {loading
                 ? 'Loading...'
                 : result === ''
-                ? 'あなたの Email や ID から AI がかっこいいニックネームを考えてくれます。入力して Submit してください。'
+                ? 'あなたの Email や ID から AI がかっこいいニックネームを考えてくれます。入力して Submit してください。入力されたデータはどこにも一切保存されません。'
                 : nl2br(result)}
             </Box>
           </Stack>

@@ -1,5 +1,5 @@
 import { OpenAIChatStream } from '~/utils/ChatGPTStream'
-import type { Message, OpenAIStreamPayload } from '~/types/types'
+import type { OpenAIStreamPayload } from '~/types/types'
 import invariant from 'tiny-invariant'
 
 export const config = {
@@ -39,12 +39,12 @@ invariant(process.env.OPENAI_API_KEY, 'Missing env var from OpenAI')
 
 const handler = async (req: Request): Promise<Response> => {
   try {
-    const { email } = (await req.json()) as {
-      email?: string
+    const { input } = (await req.json()) as {
+      input?: string
     }
 
-    if (!email) {
-      return new Response('No email in the request', { status: 400 })
+    if (!input) {
+      return new Response('No input in the request', { status: 400 })
     }
 
     const payload: OpenAIStreamPayload = {
@@ -54,7 +54,7 @@ const handler = async (req: Request): Promise<Response> => {
           role: 'system',
           content: systemPrompt,
         },
-        { role: 'user', content: email },
+        { role: 'user', content: input },
       ],
       temperature: 0.7,
       top_p: 1,
