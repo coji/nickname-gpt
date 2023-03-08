@@ -91,7 +91,7 @@ export default function Home() {
                   <Input
                     autoFocus
                     {...register('input')}
-                    placeholder="Your Email or ID"
+                    placeholder="あなたの名前、メールアドレス、ID などを入力してください"
                   />
                   <Button type="submit" colorScheme="blue" isLoading={loading}>
                     Submit
