@@ -74,7 +74,7 @@ export default function Home() {
       </Head>
 
       <Container
-        maxW="container.xl"
+        maxW="container.md"
         display="grid"
         gridTemplateRows="auto 1fr auto"
         h="100vh"
