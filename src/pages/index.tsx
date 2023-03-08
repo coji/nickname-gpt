@@ -79,13 +79,14 @@ export default function Home() {
         gridTemplateRows="auto 1fr auto"
         h="100vh"
       >
-        <Heading p="2">Nickname GPT</Heading>
+        <Heading py="16" textAlign="center">
+          Nickname GPT
+        </Heading>
 
         <Box h="full" p="2">
-          <Stack>
+          <Stack spacing="16">
             <form onSubmit={handleSubmit(handleFormSubmit)}>
               <FormControl id="input">
-                <FormLabel>Input</FormLabel>
                 <HStack>
                   <Input
                     autoFocus
