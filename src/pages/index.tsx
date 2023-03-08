@@ -90,7 +90,7 @@ export default function Home() {
                   <Input
                     autoFocus
                     {...register('input')}
-                    placeholder="ニックネームの元になるメールアドレスやIDを入力してください"
+                    placeholder="Your Email or ID"
                   />
                   <Button type="submit" colorScheme="blue" isLoading={loading}>
                     Submit
@@ -103,7 +103,7 @@ export default function Home() {
               {loading
                 ? 'Loading...'
                 : result === ''
-                ? 'あなたの Email や ID から AI がかっこいいニックネームを考えてくれます。入力して Submit してください。入力されたデータはどこにも一切保存されません。'
+                ? 'AI があなたの Email や ID から、かっこいいニックネームを考えてくれます。入力して Submit してください。入力されたデータはどこにも一切保存されません。'
                 : nl2br(result)}
             </Box>
           </Stack>
