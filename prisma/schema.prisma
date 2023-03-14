@@ -16,6 +16,27 @@ model User {
   displayName String
   photoUrl    String?
 
+  updatedAt       DateTime          @updatedAt
+  createdAt       DateTime          @default(now())
+  SystemPrompt    SystemPrompt[]
+  ModifyingPrompt ModifyingPrompt[]
+}
+
+model SystemPrompt {
+  id          Int      @id @default(autoincrement())
+  currentText String
+  parentText  String
+  user        User     @relation(fields: [userId], references: [id])
+  userId      Int
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+}
+
+model ModifyingPrompt {
+  id        Int      @id @default(autoincrement())
+  text      String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
 }
