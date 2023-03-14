@@ -6,3 +6,8 @@ npm-debug.log
 README.md
 .next
 .git
+
+.env*
+.flaskenv*
+!.env.project
+!.env.vault
