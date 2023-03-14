@@ -1,5 +1,14 @@
 {
   "yaml.schemas": {
     "https://json.schemastore.org/github-workflow.json": "file:///Users/coji/progs/nickname-gpt/.github/workflows/deploy.yml"
+  },
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "**/node_modules": true
   }
 }
