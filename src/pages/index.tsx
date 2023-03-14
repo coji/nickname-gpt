@@ -6,7 +6,6 @@ import {
   Stack,
   HStack,
   FormControl,
-  FormLabel,
   Input,
   Link,
   Button,
@@ -15,6 +14,7 @@ import { Inter } from 'next/font/google'
 import { useForm } from 'react-hook-form'
 import { useState } from 'react'
 import nl2br from 'react-nl2br'
+import { LoginPane } from '~/features/auth/components/LoginPane'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -76,12 +76,16 @@ export default function Home() {
       <Container
         maxW="container.md"
         display="grid"
-        gridTemplateRows="auto 1fr auto"
+        gridTemplateRows="auto auto 1fr auto"
         h="100vh"
       >
-        <Heading py="16" textAlign="center">
-          Nickname GPT
-        </Heading>
+        <LoginPane py="2" />
+
+        <Box>
+          <Heading py="16" textAlign="center">
+            Nickname GPT
+          </Heading>
+        </Box>
 
         <Box h="full" p="2">
           <Stack spacing="16">

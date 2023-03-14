@@ -40,7 +40,6 @@ export async function OpenAIChatStream(
           // https://platform.openai.com/docs/api-reference/chat/create
           if (data === '[DONE]') {
             controller.close()
-            console.log(message)
             if (options.onComplete) {
               options.onComplete(message)
             }
