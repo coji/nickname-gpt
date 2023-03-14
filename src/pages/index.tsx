@@ -85,7 +85,11 @@ export default function Home() {
 
         <Box h="full" p="2">
           <Stack spacing="16">
-            <form onSubmit={handleSubmit(handleFormSubmit)}>
+            <form
+              onSubmit={handleSubmit(handleFormSubmit)}
+              noValidate
+              autoComplete="off"
+            >
               <FormControl id="input">
                 <HStack>
                   <Input
