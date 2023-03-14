@@ -5,10 +5,17 @@ import {
 } from 'eventsource-parser'
 import { OpenAIStreamPayload, ChatResponseData } from '~/types/types'
 
-export async function OpenAIChatStream(payload: OpenAIStreamPayload) {
+interface OpenAIChatStreamOptions {
+  onComplete?: (message: string) => void
+}
+export async function OpenAIChatStream(
+  payload: OpenAIStreamPayload,
+  options: OpenAIChatStreamOptions = {},
+) {
   const encoder = new TextEncoder()
   const decoder = new TextDecoder()
 
+  let message = ''
   let counter = 0
 
   const res = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -33,6 +40,10 @@ export async function OpenAIChatStream(payload: OpenAIStreamPayload) {
           // https://platform.openai.com/docs/api-reference/chat/create
           if (data === '[DONE]') {
             controller.close()
+            console.log(message)
+            if (options.onComplete) {
+              options.onComplete(message)
+            }
             return
           }
           try {
@@ -43,6 +54,7 @@ export async function OpenAIChatStream(payload: OpenAIStreamPayload) {
               // this is a prefix character (i.e., "\n\n"), do nothing
               return
             }
+            message += text
             const queue = encoder.encode(text)
             controller.enqueue(queue)
             counter++

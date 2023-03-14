@@ -65,7 +65,11 @@ const handler = async (req: Request): Promise<Response> => {
       n: 1,
     }
 
-    const stream = await OpenAIChatStream(payload)
+    const stream = await OpenAIChatStream(payload, {
+      onComplete: (message) => {
+        console.log({ input, message })
+      },
+    })
     return new Response(stream)
   } catch (error: any) {
     console.error(error)

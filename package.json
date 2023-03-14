@@ -41,6 +41,7 @@
     "singleQuote": true
   },
   "devDependencies": {
+    "@tanstack/react-query-devtools": "^4.26.1",
     "prisma": "^4.11.0"
   }
 }
