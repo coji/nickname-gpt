@@ -6,15 +6,9 @@ export const t = initTRPC.create()
 
 export const appRouter = t.router({
   hello: t.procedure
-    .input(
-      z.object({
-        text: z.string(),
-      }),
-    )
+    .input(z.object({ text: z.string().min(1, "Can't be empty") }))
     .query(({ input }) => {
-      return {
-        greeting: `Hello ${input.text}`,
-      }
+      return { greeting: `Hello ${input.text}` }
     }),
 })
 
