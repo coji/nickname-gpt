@@ -32,12 +32,8 @@ export default function Home() {
 
     const response = await fetch('/api/generate', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        input: form.input,
-      }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ input: form.input }),
     })
 
     setLoading(false)
