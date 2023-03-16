@@ -19,3 +19,12 @@ model User {
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
 }
+
+model Prompt {
+  id          Int      @id @default(autoincrement())
+  type        String   @unique
+  text        String
+  description String?
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+}
