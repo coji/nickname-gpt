@@ -1,34 +1,60 @@
-# Install dependencies only when needed
-FROM node:18-alpine AS builder
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-RUN apk add --no-cache libc6-compat \
-  && npm i -g pnpm \
-  && pnpm config set store-dir /pnpm-store
+# base node image
+FROM node:18-slim as base
+ARG PNPM_VERSION=7.27.1
+
+# Install openssl for Prisma
+RUN apt-get update \
+  && apt-get install --no-install-recommends -y procps vim-tiny \
+  && apt-get clean \
+  && npm i -g pnpm@${PNPM_VERSION} \
+  && rm -rf /var/lib/apt/lists/*
+
+
+# Install all node_modules, including dev dependencies
+FROM base as deps
 
 WORKDIR /app
+
+COPY pnpm-lock.yaml ./
+RUN pnpm fetch
+
+# Setup production node_modules
+FROM base as production-deps
+
+ENV NODE_ENV "production"
+WORKDIR /app
+
+COPY --from=deps /app/node_modules /app/node_modules
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --offline --frozen-lockfile --prod
+
+
+# Build the app
+FROM base as build
+
+WORKDIR /app
+
+COPY --from=deps /app/node_modules /app/node_modules
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --offline --frozen-lockfile
+
+COPY prisma .
+RUN pnpm exec prisma generate
+
 COPY . .
-RUN pnpm install --frozen-lockfile
+RUN pnpm run build
 
-ENV NEXT_TELEMETRY_DISABLED 1
-# Add `ARG` instructions below if you need `NEXT_PUBLIC_` variables
-# then put the value on your fly.toml
-# Example:
-# ARG NEXT_PUBLIC_EXAMPLE="value here"
 
-RUN pnpm exec prisma generate && pnpm run build
+# Run the app
+FROM base
 
-FROM node:18-alpine AS runner
 WORKDIR /app
 
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
+COPY --from=production-deps /app/package.json /app/package.json
+COPY --from=build /app/node_modules /app/node_modules
+COPY --from=build /app/tsconfig.json /app/tsconfig.json
+COPY --from=build /app/prisma /app/prisma
+COPY --from=build /app/build /app/build
+COPY --from=build /app/public /app/public
 
-RUN npm i -g pnpm \
-  && addgroup --system --gid 1001 nodejs \
-  && adduser --system --uid 1001 nextjs
-
-COPY --from=builder /app ./
-
-USER nextjs
-
-CMD ["pnpm", "run", "start"]
+CMD ["pnpm", "start"]

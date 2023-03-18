@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../app/entry.client.tsx"],
+  "sourcesContent": ["import { RemixBrowser } from '@remix-run/react'\nimport { StrictMode } from 'react'\nimport { hydrate } from 'react-dom'\n\nhydrate(\n  <StrictMode>\n    <RemixBrowser />\n  </StrictMode>,\n  document,\n)\n"],
+  "mappings": ";;;;;;;;;;;AACA,IAAAA,gBAA2B;AAC3B,uBAAwB;AAIpB;AAAA,IAFJ;AAAA,EACE,mDAAC,4BACC,6DAAC,kBAAD;AAAA;AAAA;AAAA;AAAA,SAAc,KADhB;AAAA;AAAA;AAAA;AAAA,SAEA;AAAA,EACA;AACF;",
+  "names": ["import_react"]
+}
