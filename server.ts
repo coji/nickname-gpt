@@ -1,10 +1,10 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import path from 'path'
 import express from 'express'
 import compression from 'compression'
 import morgan from 'morgan'
 import { createRequestHandler } from '@remix-run/express'
-import { createMessagesStore } from '~/services/message-store.server'
-import type { AppLoadContext } from '@remix-run/node'
 
 const app = express()
 
@@ -32,7 +32,8 @@ app.all('*', function getReplayResponse(req, res, next) {
   const { PRIMARY_REGION, FLY_REGION } = process.env
 
   const isMethodReplayable = !['GET', 'OPTIONS', 'HEAD'].includes(method)
-  const isReadOnlyRegion = FLY_REGION && PRIMARY_REGION && FLY_REGION !== PRIMARY_REGION
+  const isReadOnlyRegion =
+    FLY_REGION && PRIMARY_REGION && FLY_REGION !== PRIMARY_REGION
 
   const shouldReplay = isMethodReplayable && isReadOnlyRegion
 
@@ -51,28 +52,26 @@ app.all('*', function getReplayResponse(req, res, next) {
 
 app.use(compression())
 app.disable('x-powered-by')
-app.use('/build', express.static('public/build', { immutable: true, maxAge: '1y' }))
+app.use(
+  '/build',
+  express.static('public/build', { immutable: true, maxAge: '1y' }),
+)
 app.use(express.static('public', { maxAge: '1h' }))
 app.use(morgan('tiny'))
 
 const MODE = process.env.NODE_ENV
 const BUILD_DIR = path.join(process.cwd(), 'build')
 
-const messageStore = createMessagesStore()
 app.all(
   '*',
   MODE === 'production'
     ? createRequestHandler({
         build: require(BUILD_DIR),
-        getLoadContext: (req, res) =>
-          ({messageStore} satisfies AppLoadContext),
       })
     : (...args) => {
         purgeRequireCache()
         const requestHandler = createRequestHandler({
           build: require(BUILD_DIR),
-          getLoadContext: (req, res) =>
-            ({messageStore} satisfies AppLoadContext),
           mode: MODE,
         })
         return requestHandler(...args)
