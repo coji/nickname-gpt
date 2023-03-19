@@ -4,6 +4,7 @@ specifiers:
   '@chakra-ui/react': ^2.5.2
   '@emotion/react': ^11.10.6
   '@emotion/styled': ^11.10.6
+  '@paralleldrive/cuid2': ^2.2.0
   '@prisma/client': ^4.11.0
   '@remix-run/dev': 1.14.3
   '@remix-run/eslint-config': 1.14.3
@@ -64,6 +65,7 @@ dependencies:
   '@chakra-ui/react': 2.5.2_thnuovmspcfmh4m6tvqxokweaa
   '@emotion/react': 11.10.6_pmekkgnqduwlme35zpnqhenc34
   '@emotion/styled': 11.10.6_oouaibmszuch5k64ms7uxp2aia
+  '@paralleldrive/cuid2': 2.2.0
   '@prisma/client': 4.11.0_prisma@4.11.0
   '@remix-run/express': 1.14.3_express@4.18.2
   '@remix-run/node': 1.14.3
@@ -3365,6 +3367,10 @@ packages:
       eslint-scope: 5.1.1
     dev: true
 
+  /@noble/hashes/1.3.0:
+    resolution: {integrity: sha512-ilHEACi9DwqJB0pw7kv+Apvh50jiiSyR/cQ3y4W7lOR5mhvn/50FLUfsnfJz0BDZtl/RR16kXvptiv6q1msYZg==}
+    dev: false
+
   /@nodelib/fs.scandir/2.1.5:
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
     engines: {node: '>= 8'}
@@ -3408,6 +3414,12 @@ packages:
     dependencies:
       json-parse-even-better-errors: 2.3.1
     dev: true
+
+  /@paralleldrive/cuid2/2.2.0:
+    resolution: {integrity: sha512-CVQDpPIUHrUGGLdrMGz1NmqZvqmsB2j2rCIQEu1EvxWjlFh4fhvEGmgR409cY20/67/WlJsggenq0no3p3kYsw==}
+    dependencies:
+      '@noble/hashes': 1.3.0
+    dev: false
 
   /@pkgr/utils/2.3.1:
     resolution: {integrity: sha512-wfzX8kc1PMyUILA+1Z/EqoE4UCXGy0iRGMhPwdfae1+f0OXlLqCk+By+aMzgJBzR9AzS4CDizioG6Ss1gvAFJw==}

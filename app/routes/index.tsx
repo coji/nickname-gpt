@@ -15,17 +15,34 @@ import {
 } from '@chakra-ui/react'
 import nl2br from 'react-nl2br'
 import { LoginPane } from '~/components/LoginPane'
+import { getSession, sessionStorage } from '~/services/session.server'
+import { createId } from '@paralleldrive/cuid2'
 
 export const loader = async ({ request }: LoaderArgs) => {
-  return typedjson({ time: new Date().toString() })
+  const session = await getSession(request)
+
+  let userId: string | undefined = session.get('userId')
+  if (!userId) {
+    userId = createId()
+    session.set('userId', userId)
+  }
+
+  return typedjson(
+    { userId },
+    {
+      headers: {
+        'Set-Cookie': await sessionStorage.commitSession(session),
+      },
+    },
+  )
 }
 
 export default function Index() {
-  const loaderData = useTypedLoaderData<{ time: string }>()
+  const { userId } = useTypedLoaderData<typeof loader>()
   const fetcher = useFetcher()
   const result =
-    useEventSource('/sse/time?userId=1', { event: 'message' }) ??
-    loaderData.time
+    useEventSource(`/sse/time?userId=${userId}`, { event: 'message' }) ??
+    'nothing'
 
   return (
     <>
@@ -51,7 +68,7 @@ export default function Index() {
               noValidate
               autoComplete="off"
             >
-              <input type="hidden" name="userId" value="1" />
+              <input type="hidden" name="userId" value={userId} />
               <FormControl id="message">
                 <HStack>
                   <Input
