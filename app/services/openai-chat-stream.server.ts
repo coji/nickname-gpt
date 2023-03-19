@@ -1,14 +1,14 @@
-import type { ParsedEvent, ReconnectInterval } from 'eventsource-parser'
 import { createParser } from 'eventsource-parser'
+import type { ParsedEvent, ReconnectInterval } from 'eventsource-parser'
 
-export type Role = 'system' | 'user' | 'assistant'
+type Role = 'system' | 'user' | 'assistant'
 
-export type Message = {
+interface Message {
   role: Role
   content: string
 }
 
-export interface OpenAIStreamPayload {
+interface StreamPayload {
   messages: Message[]
   model?: string
   temperature?: number
@@ -16,20 +16,16 @@ export interface OpenAIStreamPayload {
   frequency_penalty?: number
   presence_penalty?: number
   max_tokens?: number
-  n?: number
 }
 
-export interface ChatResponseData {
-  id: string
-  object: string
-  created: string
-  model: string
+interface ChatResponseData {
   choices: { delta: Partial<Message> }[]
 }
 
-interface OpenAIChatStreamOptions {
+interface ChatStreamOptions {
   onComplete?: (message: string) => void
 }
+
 export const OpenAIChatStream = async (
   {
     model = 'gpt-3.5-turbo',
@@ -39,8 +35,8 @@ export const OpenAIChatStream = async (
     presence_penalty = 0,
     max_tokens = 800,
     messages,
-  }: OpenAIStreamPayload,
-  options: OpenAIChatStreamOptions = {},
+  }: StreamPayload,
+  options: ChatStreamOptions = {},
 ) => {
   const res = await fetch('https://api.openai.com/v1/chat/completions', {
     headers: {
@@ -72,26 +68,22 @@ export const OpenAIChatStream = async (
 
   const stream = new ReadableStream({
     async start(controller) {
-      function onParse(event: ParsedEvent | ReconnectInterval) {
+      function onEvent(event: ParsedEvent | ReconnectInterval) {
         if (event.type === 'event') {
           const data = event.data
           if (data === '[DONE]') {
             controller.close()
-            if (options.onComplete) {
-              options.onComplete(message)
-            }
+            options.onComplete?.(message)
             return
           }
           try {
-            const json = JSON.parse(data)
-            const responseData = json as ChatResponseData
-            const text = responseData.choices[0].delta.content
+            const { choices } = JSON.parse(data) as ChatResponseData
+            const text = choices[0].delta.content
             if (!text || (counter < 2 && (text.match(/\n/) || []).length)) {
               return
             }
             message += text
-            const queue = encoder.encode(text)
-            controller.enqueue(queue)
+            controller.enqueue(encoder.encode(text))
             counter++
           } catch (e) {
             controller.error(e)
@@ -99,7 +91,7 @@ export const OpenAIChatStream = async (
         }
       }
 
-      const parser = createParser(onParse)
+      const parser = createParser(onEvent)
       for await (const chunk of res.body as any) {
         parser.feed(decoder.decode(chunk))
       }
