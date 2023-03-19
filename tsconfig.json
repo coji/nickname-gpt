@@ -4,7 +4,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".eslintrc.js",
-    "remix.config.js"
+    "remix.config.js",
+    "prisma/seed.js"
   ],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2019"],

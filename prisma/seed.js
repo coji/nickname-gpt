@@ -1,5 +1,6 @@
-import { PrismaClient } from '@prisma/client'
-import fs from 'fs/promises'
+/* eslint-disable @typescript-eslint/no-var-requires */
+const fs = require('fs/promises')
+const { PrismaClient } = require('@prisma/client')
 
 const prisma = new PrismaClient()
 

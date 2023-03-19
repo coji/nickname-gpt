@@ -124,7 +124,7 @@ export default function Index() {
           </Stack>
         </Box>
 
-        <Box textAlign="center" p="2">
+        <Box textAlign="center" p="2" pt="16">
           <Box>
             Copyright &copy;{' '}
             <Link href="https://twitter.com/techtalkjp" color="blue.500">
