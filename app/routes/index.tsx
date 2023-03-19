@@ -1,5 +1,6 @@
 import { typedjson, useTypedLoaderData } from 'remix-typedjson'
 import { type LoaderArgs } from '@remix-run/node'
+import { useFetcher } from '@remix-run/react'
 import { useEventSource } from 'remix-utils'
 import {
   Container,
@@ -21,8 +22,10 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 export default function Index() {
   const loaderData = useTypedLoaderData<{ time: string }>()
+  const fetcher = useFetcher()
   const result =
-    useEventSource('/sse/time', { event: 'time' }) ?? loaderData.time
+    useEventSource('/sse/time?userId=1', { event: 'message' }) ??
+    loaderData.time
 
   return (
     <>
@@ -42,10 +45,17 @@ export default function Index() {
 
         <Box h="full" p="2">
           <Stack spacing="16">
-            <form noValidate autoComplete="off">
-              <FormControl id="input">
+            <fetcher.Form
+              method="post"
+              action="/push_message"
+              noValidate
+              autoComplete="off"
+            >
+              <input type="hidden" name="userId" value="1" />
+              <FormControl id="message">
                 <HStack>
                   <Input
+                    name="message"
                     autoFocus
                     placeholder="あなたの名前、メールアドレス、ID などを入力してください"
                   />
@@ -54,7 +64,7 @@ export default function Index() {
                   </Button>
                 </HStack>
               </FormControl>
-            </form>
+            </fetcher.Form>
 
             <Box>
               {false

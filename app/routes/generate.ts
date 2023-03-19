@@ -1,3 +1,4 @@
+import { type LoaderArgs } from '@remix-run/node'
 import invariant from 'tiny-invariant'
 
 const systemPrompt = `
@@ -31,11 +32,9 @@ Output format:
 
 invariant(process.env.OPENAI_API_KEY, 'Missing env var from OpenAI')
 
-const handler = async (req: Request): Promise<Response> => {
+export const loader = async ({ request }: LoaderArgs) => {
   try {
-    const { input } = (await req.json()) as {
-      input?: string
-    }
+    const { input } = await request.json()
 
     if (!input) {
       return new Response('No input in the request', { status: 400 })
@@ -70,5 +69,3 @@ const handler = async (req: Request): Promise<Response> => {
     return new Response('Something went wrong', { status: 500 })
   }
 }
-
-export default handler
