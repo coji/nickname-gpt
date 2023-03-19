@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { typedjson, useTypedLoaderData } from 'remix-typedjson'
 import { type LoaderArgs } from '@remix-run/node'
 import { useFetcher } from '@remix-run/react'
@@ -5,6 +6,8 @@ import { useEventSource } from '~/hooks/useEventSource'
 import {
   Container,
   Box,
+  Link,
+  Heading,
   Stack,
   HStack,
   FormControl,
@@ -15,7 +18,6 @@ import nl2br from 'react-nl2br'
 import { LoginPane } from '~/components/LoginPane'
 import { getSession, sessionStorage } from '~/services/session.server'
 import { createId } from '@paralleldrive/cuid2'
-import { AppHeader, AppFooter } from '~/components'
 
 export const loader = async ({ request }: LoaderArgs) => {
   const session = await getSession(request)
@@ -33,12 +35,42 @@ export const loader = async ({ request }: LoaderArgs) => {
 }
 
 export default function Index() {
-  const { userId } = useTypedLoaderData<typeof loader>()
-  const result =
-    useEventSource(`/api/sse/message?userId=${userId}`, {
-      event: 'message',
-      init: { withCredentials: true },
-    }) ?? 'nothing'
+  const [result, setResult] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const fetcher = useFetcher()
+
+  const handleFormSubmit = async (formData: FormData) => {
+    setIsLoading(true)
+    setResult('')
+
+    const response = await fetch('/api/generate', {
+      method: 'POST',
+      body: formData,
+    })
+
+    setIsLoading(false)
+    if (!response.ok) {
+      throw new Error(response.statusText)
+    }
+
+    const data = response.body
+    if (!data) {
+      return
+    }
+
+    const reader = data.getReader()
+    const decoder = new TextDecoder()
+    let done = false
+
+    while (!done) {
+      const { value, done: doneReading } = await reader.read()
+      done = doneReading
+      const chunkValue = decoder.decode(value)
+      setResult((prev) => prev + chunkValue)
+    }
+
+    setIsLoading(false)
+  }
 
   return (
     <>
@@ -49,63 +81,66 @@ export default function Index() {
         h="100vh"
       >
         <LoginPane py="2" />
-        <AppHeader />
-        <MainContent userId={userId} result={result.data} />
-        <AppFooter />
+
+        <Box>
+          <Heading py="16" textAlign="center">
+            Nickname GPT
+          </Heading>
+        </Box>
+
+        <Box h="full" p="2">
+          <Stack spacing="16">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault()
+                const formData = new FormData(e.target as HTMLFormElement)
+                handleFormSubmit(formData)
+              }}
+              noValidate
+              autoComplete="off"
+            >
+              <FormControl>
+                <HStack>
+                  <Input
+                    name="input"
+                    autoFocus
+                    placeholder="あなたの名前、メールアドレス、ID などを入力してください"
+                  />
+                  <Button
+                    type="submit"
+                    colorScheme="blue"
+                    isLoading={isLoading}
+                  >
+                    Submit
+                  </Button>
+                </HStack>
+              </FormControl>
+            </form>
+
+            <Box>
+              {false
+                ? 'Loading...'
+                : result === ''
+                ? 'AI があなたの Email や ID から、かっこいいニックネームを考えてくれます。入力して Submit してください。入力されたデータはどこにも一切保存されません。'
+                : nl2br(result)}
+            </Box>
+          </Stack>
+        </Box>
+
+        <Box textAlign="center" p="2">
+          <Box>
+            Copyright &copy;{' '}
+            <Link href="https://twitter.com/techtalkjp" color="blue.500">
+              coji
+            </Link>{' '}
+          </Box>
+          <Box>
+            <Link href="https://github.com/coji/nickname-gpt" color="blue.500">
+              GitHub
+            </Link>
+          </Box>
+        </Box>
       </Container>
     </>
-  )
-}
-
-function MainContent({ userId, result }: { userId: string; result?: string }) {
-  return (
-    <Box h="full" p="2">
-      <Stack spacing="16">
-        <MessageForm userId={userId} />
-        <MessageBox result={result} />
-      </Stack>
-    </Box>
-  )
-}
-
-function MessageForm({ userId }: { userId: string }) {
-  const fetcher = useFetcher()
-  return (
-    <fetcher.Form
-      method="post"
-      action="/api/push_message"
-      noValidate
-      autoComplete="off"
-    >
-      <input type="hidden" name="userId" value={userId} />
-      <FormControl id="message">
-        <HStack>
-          <Input
-            name="message"
-            autoFocus
-            placeholder="あなたの名前、メールアドレス、ID などを入力してください"
-          />
-          <Button
-            type="submit"
-            colorScheme="blue"
-            isLoading={fetcher.state !== 'idle'}
-          >
-            Submit
-          </Button>
-        </HStack>
-      </FormControl>
-    </fetcher.Form>
-  )
-}
-
-function MessageBox({ result }: { result?: string }) {
-  return (
-    <Box>
-      {false
-        ? 'Loading...'
-        : result === ''
-        ? 'AI があなたの Email や ID から、かっこいいニックネームを考えてくれます。入力して Submit してください。入力されたデータはどこにも一切保存されません。'
-        : nl2br(result)}
-    </Box>
   )
 }

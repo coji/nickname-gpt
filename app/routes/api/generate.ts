@@ -1,6 +1,7 @@
-import { type LoaderArgs } from '@remix-run/node'
+import { type ActionArgs } from '@remix-run/node'
 import { OpenAIChatStream } from '~/services/openai-chat-stream.server'
 import invariant from 'tiny-invariant'
+import { z } from 'zod'
 
 const systemPrompt = `
 あなたは優秀なコピーライターです。これからユーザが入れるメールアドレスやIDの名前の付け方から、名前を決めた人がどんな人かを単語を元に類推してニックネームをつけてください。
@@ -33,14 +34,11 @@ Output format:
 
 invariant(process.env.OPENAI_API_KEY, 'Missing env var from OpenAI')
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const action = async ({ request }: ActionArgs) => {
   try {
-    const url = new URL(request.url)
-    const input = url.searchParams.get('input')
-
-    if (!input) {
-      return new Response('No input in the request', { status: 400 })
-    }
+    const formData = await request.formData()
+    const input = formData.get('input') as string
+    invariant(input, 'Missing input')
 
     const stream = await OpenAIChatStream(
       {
