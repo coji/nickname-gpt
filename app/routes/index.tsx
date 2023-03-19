@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { typedjson } from 'remix-typedjson'
 import { type LoaderArgs } from '@remix-run/node'
 import {
@@ -16,6 +15,7 @@ import nl2br from 'react-nl2br'
 import { LoginPane } from '~/components/LoginPane'
 import { getSession, sessionStorage } from '~/services/session.server'
 import { createId } from '@paralleldrive/cuid2'
+import { useGenerate } from '~/hooks/useGenerate'
 
 export const loader = async ({ request }: LoaderArgs) => {
   const session = await getSession(request)
@@ -33,40 +33,10 @@ export const loader = async ({ request }: LoaderArgs) => {
 }
 
 export default function Index() {
-  const [result, setResult] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+  const { generate, isLoading, result } = useGenerate()
 
   const handleFormSubmit = async (formData: FormData) => {
-    setIsLoading(true)
-    setResult('')
-
-    const response = await fetch('/api/generate', {
-      method: 'POST',
-      body: formData,
-    })
-
-    setIsLoading(false)
-    if (!response.ok) {
-      throw new Error(response.statusText)
-    }
-
-    const data = response.body
-    if (!data) {
-      return
-    }
-
-    const reader = data.getReader()
-    const decoder = new TextDecoder()
-    let done = false
-
-    while (!done) {
-      const { value, done: doneReading } = await reader.read()
-      done = doneReading
-      const chunkValue = decoder.decode(value)
-      setResult((prev) => prev + chunkValue)
-    }
-
-    setIsLoading(false)
+    await generate(String(formData.get('input')))
   }
 
   return (
