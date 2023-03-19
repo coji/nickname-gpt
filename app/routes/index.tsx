@@ -29,11 +29,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   return typedjson(
     { userId },
-    {
-      headers: {
-        'Set-Cookie': await sessionStorage.commitSession(session),
-      },
-    },
+    { headers: { 'Set-Cookie': await sessionStorage.commitSession(session) } },
   )
 }
 
@@ -41,7 +37,7 @@ export default function Index() {
   const { userId } = useTypedLoaderData<typeof loader>()
   const fetcher = useFetcher()
   const result =
-    useEventSource(`/sse/time?userId=${userId}`, { event: 'message' }) ??
+    useEventSource(`/api/sse/message?userId=${userId}`, { event: 'message' }) ??
     'nothing'
 
   return (
@@ -64,7 +60,7 @@ export default function Index() {
           <Stack spacing="16">
             <fetcher.Form
               method="post"
-              action="/push_message"
+              action="/api/push_message"
               noValidate
               autoComplete="off"
             >
@@ -76,7 +72,11 @@ export default function Index() {
                     autoFocus
                     placeholder="あなたの名前、メールアドレス、ID などを入力してください"
                   />
-                  <Button type="submit" colorScheme="blue">
+                  <Button
+                    type="submit"
+                    colorScheme="blue"
+                    isLoading={fetcher.state !== 'idle'}
+                  >
                     Submit
                   </Button>
                 </HStack>
