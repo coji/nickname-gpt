@@ -92,8 +92,9 @@ export const OpenAIChatStream = async (
       }
 
       const parser = createParser(onEvent)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       for await (const chunk of res.body as any) {
-        parser.feed(decoder.decode(chunk))
+        parser.feed(decoder.decode(chunk as BufferSource | undefined))
       }
     },
   })

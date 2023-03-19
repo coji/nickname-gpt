@@ -1,10 +1,19 @@
 {
-  "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": [
+    "remix.env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".eslintrc.js",
+    "remix.config.js"
+  ],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2019"],
+    "types": ["vitest/globals"],
     "isolatedModules": true,
+    "skipLibCheck": true,
     "esModuleInterop": true,
     "jsx": "react-jsx",
+    "module": "CommonJS",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "target": "ES2019",

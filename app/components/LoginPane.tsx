@@ -1,5 +1,5 @@
 import type { StackProps } from '@chakra-ui/react'
-import { Box, Button, Stack } from '@chakra-ui/react'
+import { Button, Stack } from '@chakra-ui/react'
 
 export const LoginPane = (props: StackProps) => {
   // if (status === 'loading')

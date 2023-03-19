@@ -1,8 +1,6 @@
 import { useState } from 'react'
-import { typedjson, useTypedLoaderData } from 'remix-typedjson'
+import { typedjson } from 'remix-typedjson'
 import { type LoaderArgs } from '@remix-run/node'
-import { useFetcher } from '@remix-run/react'
-import { useEventSource } from '~/hooks/useEventSource'
 import {
   Container,
   Box,
@@ -22,7 +20,7 @@ import { createId } from '@paralleldrive/cuid2'
 export const loader = async ({ request }: LoaderArgs) => {
   const session = await getSession(request)
 
-  let userId: string | undefined = session.get('userId')
+  let userId: string | undefined = session.get('userId') as string | undefined
   if (!userId) {
     userId = createId()
     session.set('userId', userId)
@@ -37,7 +35,6 @@ export const loader = async ({ request }: LoaderArgs) => {
 export default function Index() {
   const [result, setResult] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const fetcher = useFetcher()
 
   const handleFormSubmit = async (formData: FormData) => {
     setIsLoading(true)
@@ -94,7 +91,7 @@ export default function Index() {
               onSubmit={(e) => {
                 e.preventDefault()
                 const formData = new FormData(e.target as HTMLFormElement)
-                handleFormSubmit(formData)
+                void handleFormSubmit(formData)
               }}
               noValidate
               autoComplete="off"
