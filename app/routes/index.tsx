@@ -1,7 +1,7 @@
 import { typedjson, useTypedLoaderData } from 'remix-typedjson'
 import { type LoaderArgs } from '@remix-run/node'
 import { useFetcher } from '@remix-run/react'
-import { useEventSource } from 'remix-utils'
+import { useEventSource } from '~/hooks/useEventSource'
 import {
   Container,
   Box,
@@ -35,8 +35,10 @@ export const loader = async ({ request }: LoaderArgs) => {
 export default function Index() {
   const { userId } = useTypedLoaderData<typeof loader>()
   const result =
-    useEventSource(`/api/sse/message?userId=${userId}`, { event: 'message' }) ??
-    'nothing'
+    useEventSource(`/api/sse/message?userId=${userId}`, {
+      event: 'message',
+      init: { withCredentials: true },
+    }) ?? 'nothing'
 
   return (
     <>
@@ -48,14 +50,14 @@ export default function Index() {
       >
         <LoginPane py="2" />
         <AppHeader />
-        <MainContent userId={userId} result={result} />
+        <MainContent userId={userId} result={result.data} />
         <AppFooter />
       </Container>
     </>
   )
 }
 
-function MainContent({ userId, result }: { userId: string; result: string }) {
+function MainContent({ userId, result }: { userId: string; result?: string }) {
   return (
     <Box h="full" p="2">
       <Stack spacing="16">
@@ -96,7 +98,7 @@ function MessageForm({ userId }: { userId: string }) {
   )
 }
 
-function MessageBox({ result }: { result: string }) {
+function MessageBox({ result }: { result?: string }) {
   return (
     <Box>
       {false

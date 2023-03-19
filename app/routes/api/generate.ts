@@ -1,4 +1,5 @@
 import { type LoaderArgs } from '@remix-run/node'
+import { OpenAIChatStream } from '~/services/openai-chat-stream.server'
 import invariant from 'tiny-invariant'
 
 const systemPrompt = `
@@ -34,36 +35,27 @@ invariant(process.env.OPENAI_API_KEY, 'Missing env var from OpenAI')
 
 export const loader = async ({ request }: LoaderArgs) => {
   try {
-    const { input } = await request.json()
+    const url = new URL(request.url)
+    const input = url.searchParams.get('input')
 
     if (!input) {
       return new Response('No input in the request', { status: 400 })
     }
 
-    // const payload: OpenAIStreamPayload = {
-    //   model: 'gpt-3.5-turbo',
-    //   messages: [
-    //     {
-    //       role: 'system',
-    //       content: systemPrompt,
-    //     },
-    //     { role: 'user', content: input },
-    //   ],
-    //   temperature: 0.7,
-    //   top_p: 1,
-    //   frequency_penalty: 0,
-    //   presence_penalty: 0,
-    //   max_tokens: 800,
-    //   stream: true,
-    //   n: 1,
-    // }
-
-    // const stream = await OpenAIChatStream(payload, {
-    //   onComplete: (message) => {
-    //     console.log({ input, message })
-    //   },
-    // })
-    return new Response('OK', { status: 200 })
+    const stream = await OpenAIChatStream(
+      {
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: input },
+        ],
+      },
+      {
+        onComplete: (message) => {
+          console.log({ input, message })
+        },
+      },
+    )
+    return stream
   } catch (error: any) {
     console.error(error)
     return new Response('Something went wrong', { status: 500 })

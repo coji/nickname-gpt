@@ -2,7 +2,7 @@ import { Box, Link } from '@chakra-ui/react'
 
 export const AppFooter = () => {
   return (
-    <Box textAlign="center" p="2">
+    <Box textAlign="center" p="2" pt="8">
       <Box>
         Copyright ©{' '}
         <Link href="https://twitter.com/techtalkjp" color="blue.500">

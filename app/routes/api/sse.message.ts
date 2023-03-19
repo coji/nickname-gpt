@@ -11,6 +11,7 @@ export const loader = async ({ request, context }: LoaderArgs) => {
   invariant(userId)
 
   const messageStore = getMessageStore(context)
+  console.log({ userId, messageStore: messageStore.messages })
 
   return createEventStream(request.signal, messageStore, userId)
 }
@@ -27,13 +28,10 @@ function createEventStream(
 ) {
   return eventStream(signal, (send) => {
     const timer = setInterval(() => {
+      console.log('interval', userId)
       const message = messageStore.pop(userId)
-
       if (message) {
-        send({
-          event: 'message',
-          data: message,
-        })
+        send({ event: 'message', data: message })
       }
     }, 1000)
 
