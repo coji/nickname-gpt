@@ -88,7 +88,7 @@ export default function Index() {
             )}
 
             <Box>
-              {isLoading ? (
+              {data === undefined && isLoading ? (
                 <Box textAlign="center" color="gray.700">
                   Loading...
                 </Box>

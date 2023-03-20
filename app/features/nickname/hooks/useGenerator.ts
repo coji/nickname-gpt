@@ -48,7 +48,7 @@ export const useGenerator = () => {
         const { value, done: doneReading } = await reader.read()
         done = doneReading
         const chunkValue = decoder.decode(value)
-        setData((prev) => prev ?? '' + chunkValue)
+        setData((prev) => (prev ?? '') + chunkValue)
       }
 
       setState((prev) => ({ ...prev, isError: false, isSuccess: true }))
