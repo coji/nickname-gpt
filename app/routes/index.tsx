@@ -12,11 +12,10 @@ import {
   Button,
 } from '@chakra-ui/react'
 import nl2br from 'react-nl2br'
-import { LoginPane } from '~/components/LoginPane'
 import { getSession, sessionStorage } from '~/services/session.server'
 import { createId } from '@paralleldrive/cuid2'
 import { useGenerator } from '~/features/nickname/hooks/useGenerator'
-import { AppHeader, AppFooter } from '~/components'
+import { AppHeader, AppFooter, AppLoginPane } from '~/components'
 
 export const loader = async ({ request }: LoaderArgs) => {
   const session = await getSession(request)
@@ -50,7 +49,7 @@ export default function Index() {
         gridTemplateRows="auto auto 1fr auto"
         h="100vh"
       >
-        <LoginPane py="2" />
+        <AppLoginPane py="2" />
         <AppHeader layout={isFirstView ? 'normal' : 'shrink'} />
 
         <Box h="full" p="2">

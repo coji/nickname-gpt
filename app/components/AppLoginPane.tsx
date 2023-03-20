@@ -1,7 +1,9 @@
 import type { StackProps } from '@chakra-ui/react'
 import { Button, Stack } from '@chakra-ui/react'
+import { useFetcher } from '@remix-run/react'
 
-export const LoginPane = (props: StackProps) => {
+export const AppLoginPane = (props: StackProps) => {
+  const fetcher = useFetcher()
   // if (status === 'loading')
   //   return (
   //     <Stack
@@ -31,11 +33,11 @@ export const LoginPane = (props: StackProps) => {
           Sign out
         </Button>
       </> */}
-      <>
-        <Button size="sm" variant="outline">
+      <fetcher.Form method="get" action="/api/auth/login/google">
+        <Button size="sm" type="submit" variant="outline">
           Sign in
         </Button>
-      </>
+      </fetcher.Form>
     </Stack>
   )
 }
