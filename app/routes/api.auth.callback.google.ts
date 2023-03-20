@@ -1,5 +1,5 @@
 import type { LoaderArgs } from '@remix-run/node'
-import { fetchAccessToken, fetchUser } from '~/services/auth/google'
+import { fetchAccessToken, fetchUser } from '~/services/auth/google.server'
 
 export const loader = async ({ request }: LoaderArgs) => {
   const accessToken = await fetchAccessToken(request)
