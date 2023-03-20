@@ -1,18 +1,15 @@
 import type { LoaderArgs } from '@remix-run/node'
-import { fetchAccessToken, fetchUser } from '~/services/auth/google.server'
+import { fetchGoogleUser } from '~/services/auth/google.server'
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const accessToken = await fetchAccessToken(request)
-  if (!accessToken) {
-    throw new Error('No access token found in the response')
-  }
-  const user = await fetchUser(accessToken)
+  // TODO: セッション読み込み state を確認した上で問題なければログイン確認
+
+  const user = await fetchGoogleUser(request)
   if (!user) {
     throw new Error('No user found in the response')
   }
 
   return {
-    accessToken,
     user,
   }
 }

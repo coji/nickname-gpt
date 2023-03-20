@@ -55,16 +55,18 @@ export const REDIRECT_URI = '/api/auth/callback/google'
 /**
  * Google 認証画面への URL を生成する
  */
-export const generateAuthUrl = (request: Request) => {
+export const generateAuthUrl = (request: Request, state: string) => {
+  const redirectUrl = new URL(REDIRECT_URI, request.url)
+
   const params = new URLSearchParams({
     client_id: GOOGLE_CLIENT_ID,
     response_type: 'code',
     access_type: 'offline', // TODO: refresh_token を取得する場合は必要のはずだけど取れない
     scope: 'openid email profile',
     include_granted_scopes: 'true',
-    redirect_uri: new URL(REDIRECT_URI, request.url).toString(),
+    redirect_uri: redirectUrl.toString(),
     nonce: '1',
-    state: 'state1',
+    state: state,
     code_challenge: base64UrlEncode(
       createHash('sha256').update(CODE_VERIFIER).digest('base64'),
     ),
@@ -76,9 +78,9 @@ export const generateAuthUrl = (request: Request) => {
 
 /**
  * アクセストークンの取得
- * @param code 認証コード
+ * @param request コールバックで認証コードパラメータが含まれる Request
  */
-export const fetchAccessToken = async (request: Request) => {
+const fetchGoogleAccessToken = async (request: Request) => {
   const code = new URL(request.url).searchParams.get('code')
   if (!code) {
     throw new Error('No code found in the URL.')
@@ -113,7 +115,10 @@ export const fetchAccessToken = async (request: Request) => {
  * @param accessToken
  * @returns GoogleUser
  */
-export const fetchUser = async (accessToken: string): Promise<GoogleUser> => {
+export const fetchGoogleUser = async (
+  request: Request,
+): Promise<GoogleUser> => {
+  const accessToken = await fetchGoogleAccessToken(request)
   const ret = await fetch('https://www.googleapis.com/userinfo/v2/me', {
     headers: { Authorization: `Bearer ${accessToken}` },
   })
