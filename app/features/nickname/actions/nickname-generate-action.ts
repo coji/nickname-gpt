@@ -6,7 +6,7 @@ import { getSystemPrompt } from '~/models/prompts.server'
 export const action = async ({ request }: ActionArgs) => {
   try {
     const formData = await request.formData()
-    const input = formData.get('input') as string
+    const input = formData.get('input')?.toString()
     invariant(input, 'Missing input')
 
     const systemPrompt = await getSystemPrompt()
@@ -26,7 +26,7 @@ export const action = async ({ request }: ActionArgs) => {
     )
     return stream
   } catch (error) {
-    console.error(error)
+    console.error('nickname generate action error: ', error)
     return new Response('Something went wrong', { status: 500 })
   }
 }

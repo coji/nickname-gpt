@@ -1,12 +1,23 @@
 import { useState } from 'react'
 
+interface GeneratorState {
+  isLoading: boolean
+  isError: boolean
+  isSuccess: boolean
+}
+
 export const useGenerator = () => {
-  const [result, setResult] = useState<string | undefined>(undefined)
-  const [isLoading, setIsLoading] = useState(false)
+  const [data, setData] = useState<string | undefined>(undefined)
+  const [error, setError] = useState<string | undefined>(undefined)
+  const [state, setState] = useState<GeneratorState>({
+    isLoading: false,
+    isError: false,
+    isSuccess: false,
+  })
 
   const generate = async (input: string) => {
-    setIsLoading(true)
-    setResult('')
+    setState({ isLoading: true, isError: false, isSuccess: false })
+    setData(undefined)
 
     const formData = new FormData()
     formData.set('input', input)
@@ -37,18 +48,27 @@ export const useGenerator = () => {
         const { value, done: doneReading } = await reader.read()
         done = doneReading
         const chunkValue = decoder.decode(value)
-        setResult((prev) => prev ?? '' + chunkValue)
+        setData((prev) => prev ?? '' + chunkValue)
       }
+
+      setState((prev) => ({ ...prev, isError: false, isSuccess: true }))
     } catch (e) {
+      let errorMessage = ''
+      if (e instanceof Error) {
+        errorMessage += e.message
+      }
       console.log('error', e)
+      setError(errorMessage)
+      setState((prev) => ({ ...prev, isError: true, isSuccess: false }))
     } finally {
-      setIsLoading(false)
+      setState((prev) => ({ ...prev, isLoading: false }))
     }
   }
 
   return {
-    result,
-    isLoading,
+    data,
+    error,
+    ...state,
     generate,
   }
 }

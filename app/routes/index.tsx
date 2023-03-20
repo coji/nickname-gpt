@@ -1,10 +1,10 @@
+import { useState } from 'react'
 import { typedjson } from 'remix-typedjson'
 import { type LoaderArgs } from '@remix-run/node'
 import {
   Container,
   Box,
-  Link,
-  Heading,
+  Text,
   Stack,
   HStack,
   FormControl,
@@ -16,6 +16,7 @@ import { LoginPane } from '~/components/LoginPane'
 import { getSession, sessionStorage } from '~/services/session.server'
 import { createId } from '@paralleldrive/cuid2'
 import { useGenerator } from '~/features/nickname/hooks/useGenerator'
+import { AppHeader, AppFooter } from '~/components'
 
 export const loader = async ({ request }: LoaderArgs) => {
   const session = await getSession(request)
@@ -33,9 +34,11 @@ export const loader = async ({ request }: LoaderArgs) => {
 }
 
 export default function Index() {
-  const { generate, isLoading, result } = useGenerator()
+  const { generate, isLoading, isError, data, error } = useGenerator()
+  const [isFirstView, setIsFirstView] = useState(true)
 
   const handleFormSubmit = async (formData: FormData) => {
+    setIsFirstView(false)
     await generate(String(formData.get('input')))
   }
 
@@ -48,12 +51,7 @@ export default function Index() {
         h="100vh"
       >
         <LoginPane py="2" />
-
-        <Box>
-          <Heading py="16" textAlign="center">
-            Nickname GPT
-          </Heading>
-        </Box>
+        <AppHeader layout={isFirstView ? 'normal' : 'shrink'} />
 
         <Box h="full" p="2">
           <Stack spacing="16">
@@ -84,29 +82,33 @@ export default function Index() {
               </FormControl>
             </form>
 
+            {isError && (
+              <Box textAlign="center" color="red.500">
+                {error}
+              </Box>
+            )}
+
             <Box>
-              {isLoading
-                ? 'Loading...'
-                : result === undefined
-                ? 'AI があなたの Email や ID から、かっこいいニックネームを考えてくれます。入力して Submit してください。入力されたデータはどこにも一切保存されません。'
-                : nl2br(result)}
+              {isLoading ? (
+                <Box textAlign="center" color="gray.700">
+                  Loading...
+                </Box>
+              ) : data === undefined ? (
+                <Box textAlign="center" color="gray.700">
+                  <Text>
+                    AI がかっこいいニックネームを考えます。Email や ID
+                    を入力して Submitしてください。
+                  </Text>
+                  <Text>入力されたデータはどこにも一切保存されません。</Text>
+                </Box>
+              ) : (
+                nl2br(data)
+              )}
             </Box>
           </Stack>
         </Box>
 
-        <Box textAlign="center" p="2" pt="16">
-          <Box>
-            Copyright &copy;{' '}
-            <Link href="https://twitter.com/techtalkjp" color="blue.500">
-              coji
-            </Link>{' '}
-          </Box>
-          <Box>
-            <Link href="https://github.com/coji/nickname-gpt" color="blue.500">
-              GitHub
-            </Link>
-          </Box>
-        </Box>
+        <AppFooter />
       </Container>
     </>
   )
