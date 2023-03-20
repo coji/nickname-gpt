@@ -1,15 +1,17 @@
 import { createParser } from 'eventsource-parser'
 import type { ParsedEvent, ReconnectInterval } from 'eventsource-parser'
+import invariant from 'tiny-invariant'
+invariant(process.env.OPENAI_API_KEY, 'OPENAI_API_KEY should defined')
 
 type Role = 'system' | 'user' | 'assistant'
 
-interface Message {
+interface OpenAIMessage {
   role: Role
   content: string
 }
 
-interface StreamPayload {
-  messages: Message[]
+interface OpenAIStreamPayload {
+  messages: OpenAIMessage[]
   model?: string
   temperature?: number
   top_p?: number
@@ -18,11 +20,11 @@ interface StreamPayload {
   max_tokens?: number
 }
 
-interface ChatResponseData {
-  choices: { delta: Partial<Message> }[]
+interface OpenAIChatResponseData {
+  choices: { delta: Partial<OpenAIMessage> }[]
 }
 
-interface ChatStreamOptions {
+interface OpenAIChatStreamOptions {
   onComplete?: (message: string) => void
 }
 
@@ -35,8 +37,8 @@ export const OpenAIChatStream = async (
     presence_penalty = 0,
     max_tokens = 800,
     messages,
-  }: StreamPayload,
-  options: ChatStreamOptions = {},
+  }: OpenAIStreamPayload,
+  options: OpenAIChatStreamOptions = {},
 ) => {
   const res = await fetch('https://api.openai.com/v1/chat/completions', {
     headers: {
@@ -77,7 +79,7 @@ export const OpenAIChatStream = async (
             return
           }
           try {
-            const { choices } = JSON.parse(data) as ChatResponseData
+            const { choices } = JSON.parse(data) as OpenAIChatResponseData
             const text = choices[0].delta.content
             if (!text || (counter < 2 && (text.match(/\n/) || []).length)) {
               return

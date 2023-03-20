@@ -15,7 +15,7 @@ import nl2br from 'react-nl2br'
 import { LoginPane } from '~/components/LoginPane'
 import { getSession, sessionStorage } from '~/services/session.server'
 import { createId } from '@paralleldrive/cuid2'
-import { useGenerate } from '~/hooks/useGenerate'
+import { useGenerator } from '~/features/nickname/hooks/useGenerator'
 
 export const loader = async ({ request }: LoaderArgs) => {
   const session = await getSession(request)
@@ -33,7 +33,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 }
 
 export default function Index() {
-  const { generate, isLoading, result } = useGenerate()
+  const { generate, isLoading, result } = useGenerator()
 
   const handleFormSubmit = async (formData: FormData) => {
     await generate(String(formData.get('input')))
@@ -85,9 +85,9 @@ export default function Index() {
             </form>
 
             <Box>
-              {false
+              {isLoading
                 ? 'Loading...'
-                : result === ''
+                : result === undefined
                 ? 'AI があなたの Email や ID から、かっこいいニックネームを考えてくれます。入力して Submit してください。入力されたデータはどこにも一切保存されません。'
                 : nl2br(result)}
             </Box>
