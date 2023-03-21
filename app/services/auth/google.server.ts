@@ -54,7 +54,7 @@ const isGoogleUser = (user: unknown): user is GoogleUser => {
   return typeof user === 'object' && user !== null && 'email' in user
 }
 
-export const buildRedirectUrl = (request: Request) => {
+const buildRedirectUrl = (request: Request) => {
   return new URL(REDIRECT_URI, createForwardedRequest(request).url).toString()
 }
 
