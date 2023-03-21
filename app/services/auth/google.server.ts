@@ -3,6 +3,7 @@ import invariant from 'tiny-invariant'
 import { createHash } from 'crypto'
 import { createId } from '@paralleldrive/cuid2'
 import { getSession, sessionStorage } from '../session.server'
+import { base64UrlEncode, createForwardedRequest } from './helpers'
 
 invariant(process.env.GOOGLE_CLIENT_ID, 'GOOGLE_CLIENT_ID should be defined.')
 invariant(
@@ -46,9 +47,6 @@ interface GoogleUser {
   hd: string
 }
 
-const base64UrlEncode = (str: string) =>
-  str.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
-
 /**
  * Google User 型ガード
  */
@@ -56,28 +54,7 @@ const isGoogleUser = (user: unknown): user is GoogleUser => {
   return typeof user === 'object' && user !== null && 'email' in user
 }
 
-/**
- * 本番環境でリバースプロクシされてる場合などで forwarded 系ヘッダに応じた適正なリクエストURLを生成する
- * @param req
- * @returns
- */
-const createForwardedRequest = (req: Request) => {
-  const forwardedHost =
-    req.headers.get('x-forwarded-host') || req.headers.get('host')
-  const forwardedProto = req.headers.get('x-forwarded-proto')
-
-  const url = new URL(req.url)
-  const protocol = forwardedProto ? forwardedProto + ':' : url.protocol
-  const hostname = forwardedHost ?? url.hostname
-
-  const request = new Request(
-    `${protocol}//${hostname}${url.pathname}${url.search}${url.hash}`,
-    req,
-  )
-  return request
-}
-
-const buildRedirectUrl = (request: Request) => {
+export const buildRedirectUrl = (request: Request) => {
   return new URL(REDIRECT_URI, createForwardedRequest(request).url).toString()
 }
 
