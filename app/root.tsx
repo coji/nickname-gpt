@@ -12,8 +12,13 @@ import {
 export const meta: V2_MetaFunction = () => [
   {
     title: 'Nickname GPT',
-    charset: 'utf-8',
-    viewport: 'width=device-width,initial-scale=1',
+  },
+  {
+    charSet: 'utf-8',
+  },
+  {
+    name: 'viewport',
+    content: 'width=device-width,initial-scale=1',
   },
   {
     name: 'description',
