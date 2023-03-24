@@ -1,6 +1,14 @@
 import type { LoaderArgs } from '@remix-run/node'
-import { authenticate } from '~/services/auth/google.server'
+import { authenticator } from '~/services/auth.server'
+import { createForwardedRequest } from '~/utils/helpers'
 
 export const loader = async ({ request }: LoaderArgs) => {
-  return await authenticate(request)
+  return await authenticator.authenticate(
+    'google',
+    createForwardedRequest(request),
+    {
+      successRedirect: '/',
+      failureRedirect: '/',
+    },
+  )
 }

@@ -50,6 +50,9 @@ specifiers:
   react: 18.2.0
   react-dom: 18.2.0
   react-nl2br: ^1.0.4
+  remix-auth: ^3.4.0
+  remix-auth-google: ^1.2.0
+  remix-auth-oauth2: ^1.6.0
   remix-flat-routes: ^0.5.8
   remix-typedjson: ^0.1.7
   remix-utils: ^6.0.0
@@ -87,6 +90,9 @@ dependencies:
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-nl2br: 1.0.4_react@18.2.0
+  remix-auth: 3.4.0_@remix-run+react@1.14.3
+  remix-auth-google: 1.2.0_remix-auth@3.4.0
+  remix-auth-oauth2: 1.6.0_remix-auth@3.4.0
   remix-typedjson: 0.1.7_fh7rng5esma2cylftmg7vzq6cy
   remix-utils: 6.0.0_mgjw6aceb2w2kwif47iycz2tny
   tiny-invariant: 1.3.1
@@ -5157,7 +5163,6 @@ packages:
         optional: true
     dependencies:
       ms: 2.1.2
-    dev: true
 
   /decode-named-character-reference/1.0.2:
     resolution: {integrity: sha512-O8x12RzrUF8xyVcY0KJowWsmaJxQbmy0/EtnNtHRpsOcT7dFk5W598coHqBVpmWo1oQQfsCqfCmkZN5DJrZVdg==}
@@ -8129,7 +8134,6 @@ packages:
 
   /ms/2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
-    dev: true
 
   /ms/2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
@@ -9160,6 +9164,41 @@ packages:
       mdast-util-to-hast: 11.3.0
       unified: 10.1.2
     dev: true
+
+  /remix-auth-google/1.2.0_remix-auth@3.4.0:
+    resolution: {integrity: sha512-llyrtOt8vk503XlAoEdGuEmrHRACFOP13yPVn92VkrcogTUyALzuy8ky2O1/FSJ7Q2+B0di5yMiCF4IYD/Yn4g==}
+    peerDependencies:
+      '@remix-run/server-runtime': ^1.1.1
+      remix-auth: ^3.2.1
+    dependencies:
+      remix-auth: 3.4.0_@remix-run+react@1.14.3
+      remix-auth-oauth2: 1.6.0_remix-auth@3.4.0
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
+  /remix-auth-oauth2/1.6.0_remix-auth@3.4.0:
+    resolution: {integrity: sha512-HnMgdKn/+LIKHYlbxys14g9cUMGvzMS9mbopAfnntIYWBC8MOfUy6uYyyoWJNqm3HriAE/MiEUaTnlz3B0c7uQ==}
+    peerDependencies:
+      '@remix-run/server-runtime': ^1.0.0
+      remix-auth: ^3.2.2
+    dependencies:
+      debug: 4.3.4
+      remix-auth: 3.4.0_@remix-run+react@1.14.3
+      uuid: 8.3.2
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
+  /remix-auth/3.4.0_@remix-run+react@1.14.3:
+    resolution: {integrity: sha512-VRliJo9VRAS4sSYgMjYbi7rYRixPWU2Tb8PFZb06OIj0nONK/1KRzHf2+Y6VGZeIacepLVgan6g2IUJjayE2rQ==}
+    peerDependencies:
+      '@remix-run/react': ^1.0.0
+      '@remix-run/server-runtime': ^1.0.0
+    dependencies:
+      '@remix-run/react': 1.14.3_biqbaboplfbrettd7655fr4n2y
+      uuid: 8.3.2
+    dev: false
 
   /remix-flat-routes/0.5.8:
     resolution: {integrity: sha512-wMKS48CR5NN+wcMu34JUljcVfkKzuLIZ6eP0ksxE0zgJIeqz4mdPi/TZxvHAVossxAg174iLRh1E9d4wPmxAQg==}

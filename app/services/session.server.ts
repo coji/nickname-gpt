@@ -5,7 +5,12 @@ invariant(
   'SESSION_SECRET environment variable should defined',
 )
 
-export const sessionStorage = createCookieSessionStorage({
+interface SessionUser {
+  uid: number
+  state: string
+}
+
+export const sessionStorage = createCookieSessionStorage<SessionUser>({
   cookie: {
     name: '__session',
     httpOnly: true,

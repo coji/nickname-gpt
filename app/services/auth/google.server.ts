@@ -3,7 +3,7 @@ import invariant from 'tiny-invariant'
 import { createHash } from 'crypto'
 import { createId } from '@paralleldrive/cuid2'
 import { getSession, sessionStorage } from '../session.server'
-import { base64UrlEncode, createForwardedRequest } from './helpers'
+import { base64UrlEncode, createForwardedRequest } from '../../utils/helpers'
 
 invariant(process.env.GOOGLE_CLIENT_ID, 'GOOGLE_CLIENT_ID should be defined.')
 invariant(
@@ -44,7 +44,7 @@ interface GoogleUser {
   /**
    * 所属組織 (workspacesの場合)
    */
-  hd: string
+  hd?: string
 }
 
 /**
@@ -63,8 +63,7 @@ export const REDIRECT_URI = '/api/auth/callback/google'
 /**
  * Google 認証を行う
  */
-export const authenticate = async (request: Request) => {
-  const redirectUrl = buildRedirectUrl(request)
+export const startGoogleOAuth2 = async (request: Request) => {
   const state = createId()
 
   const session = await getSession(request)
@@ -76,7 +75,7 @@ export const authenticate = async (request: Request) => {
     access_type: 'offline', // TODO: refresh_token を取得する場合は必要のはずだけど取れない
     scope: 'openid email profile',
     include_granted_scopes: 'true',
-    redirect_uri: redirectUrl,
+    redirect_uri: buildRedirectUrl(request),
     nonce: '1',
     state,
     code_challenge: base64UrlEncode(
@@ -107,7 +106,7 @@ const fetchGoogleAccessToken = async (request: Request) => {
     throw new Error('No state found in the URL.')
   }
   const session = await getSession(request)
-  const stateSession = session.get('state') as string | undefined
+  const stateSession = session.get('state')
   if (!stateSession) {
     throw new Error('No state found in the session.')
   }
@@ -144,8 +143,8 @@ const fetchGoogleAccessToken = async (request: Request) => {
   }
 
   const json: unknown = await ret.json()
-  const { access_token } = json as Record<string, string>
-  return access_token
+  const { access_token: accessToken } = json as Record<string, string>
+  return accessToken
 }
 
 /**
