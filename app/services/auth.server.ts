@@ -1,7 +1,7 @@
 import { Authenticator } from 'remix-auth'
 import { GoogleStrategy } from 'remix-auth-google'
-import { sessionStorage } from '~/services/session.server'
 import invariant from 'tiny-invariant'
+import { sessionStorage, type SessionUser } from '~/services/session.server'
 import { prisma } from './database.server'
 
 invariant(process.env.GOOGLE_CLIENT_ID, 'GOOGLE_CLIENT_ID should be defined.')
@@ -10,27 +10,32 @@ invariant(
   'GOOGLE_CLIENT_SECRET should be defined.',
 )
 
-interface SessionUser {
-  uid: number
-}
-
 const authenticator = new Authenticator<SessionUser>(sessionStorage)
 const googleStrategy = new GoogleStrategy(
   {
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: '/api/auth/login/google',
+    callbackURL: '/auth/callback/google',
   },
   async ({ accessToken, refreshToken, extraParams, profile }) => {
-    const user = await prisma.user.findUnique({
+    const user = await prisma.user.upsert({
       where: {
         email: profile.emails[0].value,
+      },
+      create: {
+        email: profile.emails[0].value,
+        displayName: profile.displayName,
+        photoUrl: profile.photos[0].value,
+      },
+      update: {
+        displayName: profile.displayName,
+        photoUrl: profile.photos[0].value,
       },
     })
     if (!user) {
       throw new Error('User not found')
     }
-    return { uid: user.id }
+    return { uid: String(user.id) }
   },
 )
 

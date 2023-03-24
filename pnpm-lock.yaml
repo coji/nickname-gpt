@@ -46,6 +46,7 @@ specifiers:
   npm-run-all: ^4.1.5
   openai: ^3.2.1
   prettier: ^2.8.4
+  prettier-plugin-organize-imports: ^3.2.2
   prisma: ^4.11.0
   react: 18.2.0
   react-dom: 18.2.0
@@ -87,6 +88,7 @@ dependencies:
   isbot: 3.6.7
   morgan: 1.10.0
   openai: 3.2.1
+  prettier-plugin-organize-imports: 3.2.2_silln3pw57har7jydmecgzoypa
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-nl2br: 1.0.4_react@18.2.0
@@ -8703,6 +8705,23 @@ packages:
     engines: {node: '>= 0.8.0'}
     dev: true
 
+  /prettier-plugin-organize-imports/3.2.2_silln3pw57har7jydmecgzoypa:
+    resolution: {integrity: sha512-e97lE6odGSiHonHJMTYC0q0iLXQyw0u5z/PJpvP/3vRy6/Zi9kLBwFAbEGjDzIowpjQv8b+J04PDamoUSQbzGA==}
+    peerDependencies:
+      '@volar/vue-language-plugin-pug': ^1.0.4
+      '@volar/vue-typescript': ^1.0.4
+      prettier: '>=2.0'
+      typescript: '>=2.9'
+    peerDependenciesMeta:
+      '@volar/vue-language-plugin-pug':
+        optional: true
+      '@volar/vue-typescript':
+        optional: true
+    dependencies:
+      prettier: 2.8.4
+      typescript: 4.9.5
+    dev: false
+
   /prettier/2.7.1:
     resolution: {integrity: sha512-ujppO+MkdPqoVINuDFDRLClm7D78qbDt0/NR+wp5FqEZOoTNAjPHWj17QRhu7geIHJfcNhRk1XVQmF8Bp3ye+g==}
     engines: {node: '>=10.13.0'}
@@ -8713,7 +8732,6 @@ packages:
     resolution: {integrity: sha512-vIS4Rlc2FNh0BySk3Wkd6xmwxB0FpOndW5fisM5H8hsZSxU2VWVB5CWIkIjWvrHjIhxk2g3bfMKM87zNTrZddw==}
     engines: {node: '>=10.13.0'}
     hasBin: true
-    dev: true
 
   /pretty-format/27.5.1:
     resolution: {integrity: sha512-Qb1gy5OrP5+zDf2Bvnzdl3jsTf1qXVMazbvCoKhtKqVs4/YK4ozX4gKQJJVyNe+cajNPn0KoC0MC3FUmaHWEmQ==}

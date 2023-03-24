@@ -1,5 +1,5 @@
-import { createParser } from 'eventsource-parser'
 import type { ParsedEvent, ReconnectInterval } from 'eventsource-parser'
+import { createParser } from 'eventsource-parser'
 import invariant from 'tiny-invariant'
 invariant(process.env.OPENAI_API_KEY, 'OPENAI_API_KEY should defined')
 

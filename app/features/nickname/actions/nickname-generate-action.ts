@@ -1,7 +1,7 @@
 import { type ActionArgs } from '@remix-run/node'
-import { OpenAIChatStream } from '~/services/openai-chat-stream.server'
 import invariant from 'tiny-invariant'
 import { getSystemPrompt } from '~/models/prompts.server'
+import { OpenAIChatStream } from '~/services/openai-chat-stream.server'
 
 export const action = async ({ request }: ActionArgs) => {
   try {

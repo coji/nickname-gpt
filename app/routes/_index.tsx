@@ -1,29 +1,29 @@
-import { useState } from 'react'
-import { typedjson } from 'remix-typedjson'
-import { type LoaderArgs } from '@remix-run/node'
 import {
-  Container,
   Box,
-  Text,
-  Stack,
-  HStack,
-  FormControl,
-  Input,
   Button,
+  Container,
+  FormControl,
+  HStack,
+  Input,
+  Stack,
+  Text,
 } from '@chakra-ui/react'
-import nl2br from 'react-nl2br'
-import { getSession, sessionStorage } from '~/services/session.server'
 import { createId } from '@paralleldrive/cuid2'
+import { type LoaderArgs } from '@remix-run/node'
+import { useState } from 'react'
+import nl2br from 'react-nl2br'
+import { typedjson } from 'remix-typedjson'
+import { AppFooter, AppHeader, AppLoginPane } from '~/components'
 import { useGenerator } from '~/features/nickname/hooks/useGenerator'
-import { AppHeader, AppFooter, AppLoginPane } from '~/components'
+import { getSession, sessionStorage } from '~/services/session.server'
 
 export const loader = async ({ request }: LoaderArgs) => {
   const session = await getSession(request)
 
-  let userId: string | undefined = session.get('userId') as string | undefined
+  let userId = session.get('guestId')
   if (!userId) {
     userId = createId()
-    session.set('userId', userId)
+    session.set('guestId', userId)
   }
 
   return typedjson(

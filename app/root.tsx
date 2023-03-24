@@ -1,5 +1,5 @@
 import { ChakraProvider } from '@chakra-ui/react'
-import { type LoaderArgs, type MetaFunction, json } from '@remix-run/node'
+import { json, type LoaderArgs, type MetaFunction } from '@remix-run/node'
 import {
   Links,
   LiveReload,

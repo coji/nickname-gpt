@@ -1,9 +1,10 @@
 import type { StackProps } from '@chakra-ui/react'
 import { Button, Stack } from '@chakra-ui/react'
-import { useFetcher } from '@remix-run/react'
+import { Link, useNavigation } from '@remix-run/react'
 
 export const AppLoginPane = (props: StackProps) => {
-  const fetcher = useFetcher()
+  const navigation = useNavigation()
+
   // if (status === 'loading')
   //   return (
   //     <Stack
@@ -33,11 +34,19 @@ export const AppLoginPane = (props: StackProps) => {
           Sign out
         </Button>
       </> */}
-      <fetcher.Form method="get" action="/api/auth/login/google">
-        <Button size="sm" type="submit" variant="outline">
-          Sign in
-        </Button>
-      </fetcher.Form>
+      <Button
+        as={Link}
+        to="/auth/google"
+        size="sm"
+        type="submit"
+        variant="outline"
+        isLoading={
+          navigation.state !== 'idle' &&
+          navigation.location.pathname === '/auth/google'
+        }
+      >
+        Sign in
+      </Button>
     </Stack>
   )
 }

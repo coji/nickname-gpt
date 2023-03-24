@@ -5,9 +5,9 @@ invariant(
   'SESSION_SECRET environment variable should defined',
 )
 
-interface SessionUser {
-  uid: number
-  state: string
+export interface SessionUser {
+  uid: string
+  guestId?: string
 }
 
 export const sessionStorage = createCookieSessionStorage<SessionUser>({
