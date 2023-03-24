@@ -47,7 +47,7 @@ export default function Index() {
         maxW="container.md"
         display="grid"
         gridTemplateRows="auto auto 1fr auto"
-        h="100vh"
+        h="100svh"
       >
         <AppLoginPane py="2" />
         <AppHeader layout={isFirstView ? 'normal' : 'shrink'} />
