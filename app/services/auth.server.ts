@@ -31,11 +31,17 @@ const googleStrategy = new GoogleStrategy(
         displayName: profile.displayName,
         photoUrl: profile.photos[0].value,
       },
+      select: {
+        id: true,
+        email: true,
+        displayName: true,
+        photoUrl: true,
+      },
     })
     if (!user) {
       throw new Error('User not found')
     }
-    return { uid: String(user.id) }
+    return { user }
   },
 )
 

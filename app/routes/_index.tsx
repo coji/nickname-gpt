@@ -9,25 +9,29 @@ import {
   Text,
 } from '@chakra-ui/react'
 import { createId } from '@paralleldrive/cuid2'
-import { type LoaderArgs } from '@remix-run/node'
+import { json, type LoaderArgs } from '@remix-run/node'
 import { useState } from 'react'
 import nl2br from 'react-nl2br'
-import { typedjson } from 'remix-typedjson'
 import { AppFooter, AppHeader, AppLoginPane } from '~/components'
 import { useGenerator } from '~/features/nickname/hooks/useGenerator'
+import { authenticator } from '~/services/auth.server'
 import { getSession, sessionStorage } from '~/services/session.server'
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const session = await getSession(request)
+  const sessionUser = await authenticator.isAuthenticated(request)
 
-  let userId = session.get('guestId')
-  if (!userId) {
-    userId = createId()
-    session.set('guestId', userId)
+  const session = await getSession(request)
+  let guestId = session.get('guestId')
+  if (!guestId) {
+    guestId = createId()
+    session.set('guestId', guestId)
   }
 
-  return typedjson(
-    { userId },
+  return json(
+    {
+      user: sessionUser?.user,
+      guestId,
+    },
     { headers: { 'Set-Cookie': await sessionStorage.commitSession(session) } },
   )
 }

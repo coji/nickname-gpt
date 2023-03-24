@@ -1,3 +1,4 @@
+import { type User } from '@prisma/client'
 import { createCookieSessionStorage } from '@remix-run/node'
 import invariant from 'tiny-invariant'
 invariant(
@@ -6,8 +7,13 @@ invariant(
 )
 
 export interface SessionUser {
-  uid: string
   guestId?: string
+  user: {
+    id: User['id']
+    email: User['email']
+    displayName: User['displayName']
+    photoUrl: User['photoUrl']
+  }
 }
 
 export const sessionStorage = createCookieSessionStorage<SessionUser>({
