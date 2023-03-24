@@ -12,7 +12,6 @@ export const action = async ({ request }: ActionArgs) => {
     const systemPrompt = await getSystemPrompt()
     const stream = await OpenAIChatStream(
       {
-        max_tokens: 2000,
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: input },
