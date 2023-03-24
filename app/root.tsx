@@ -1,5 +1,5 @@
 import { ChakraProvider } from '@chakra-ui/react'
-import { json, type LoaderArgs, type MetaFunction } from '@remix-run/node'
+import { json, type LoaderArgs, type V2_MetaFunction } from '@remix-run/node'
 import {
   Links,
   LiveReload,
@@ -9,11 +9,17 @@ import {
   ScrollRestoration,
 } from '@remix-run/react'
 
-export const meta: MetaFunction = () => ({
-  charset: 'utf-8',
-  title: 'Nickname GPT',
-  viewport: 'width=device-width,initial-scale=1',
-})
+export const meta: V2_MetaFunction = () => [
+  {
+    title: 'Nickname GPT',
+    charset: 'utf-8',
+    viewport: 'width=device-width,initial-scale=1',
+  },
+  {
+    name: 'description',
+    content: 'AI generates nicknames from IDs and email addresses.',
+  },
+]
 
 interface DocumentProps {
   children: React.ReactNode
