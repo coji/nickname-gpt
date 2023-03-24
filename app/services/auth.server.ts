@@ -38,10 +38,7 @@ const googleStrategy = new GoogleStrategy(
         photoUrl: true,
       },
     })
-    if (!user) {
-      throw new Error('User not found')
-    }
-    return { user }
+    return { ...user, photoUrl: user.photoUrl ?? undefined }
   },
 )
 

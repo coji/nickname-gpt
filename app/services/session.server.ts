@@ -7,13 +7,10 @@ invariant(
 )
 
 export interface SessionUser {
-  guestId?: string
-  user: {
-    id: User['id']
-    email: User['email']
-    displayName: User['displayName']
-    photoUrl: User['photoUrl']
-  }
+  id: User['id']
+  email: User['email']
+  displayName: User['displayName']
+  photoUrl?: NonNullable<User['photoUrl']>
 }
 
 export const sessionStorage = createCookieSessionStorage<SessionUser>({

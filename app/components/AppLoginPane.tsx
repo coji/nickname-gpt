@@ -1,5 +1,15 @@
 import type { StackProps } from '@chakra-ui/react'
-import { Button, Stack } from '@chakra-ui/react'
+import {
+  Avatar,
+  Button,
+  Menu,
+  MenuButton,
+  MenuDivider,
+  MenuItem,
+  MenuList,
+  Stack,
+  Text,
+} from '@chakra-ui/react'
 import { Link, useNavigation } from '@remix-run/react'
 import { useUser } from '~/hooks/use-user'
 
@@ -43,19 +53,23 @@ export const AppLoginPane = (props: StackProps) => {
       color="gray.500"
       {...props}
     >
-      <Button
-        as={Link}
-        to="/auth/logout"
-        size="sm"
-        type="submit"
-        variant="outline"
-        isLoading={
-          navigation.state !== 'idle' &&
-          navigation.location.pathname === '/auth/logout'
-        }
-      >
-        Sign Out
-      </Button>
+      <Menu>
+        <MenuButton>
+          <Avatar size="sm" src={user.photoUrl}></Avatar>
+        </MenuButton>
+        <MenuList>
+          <MenuItem>
+            <Stack spacing="0">
+              <Text>{user.displayName}</Text>
+              <Text fontSize="xs">{user.email}</Text>
+            </Stack>
+          </MenuItem>
+          <MenuDivider />
+          <MenuItem as={Link} to="/auth/logout">
+            Sign Out
+          </MenuItem>
+        </MenuList>
+      </Menu>
 
       {/* <>
         <Box>Signed in as {session.user.email} </Box>
