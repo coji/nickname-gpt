@@ -1,7 +1,7 @@
 import { type ActionArgs } from '@remix-run/node'
 import invariant from 'tiny-invariant'
 import { getSystemPrompt } from '~/models/prompts.server'
-import { OpenAIChatStream } from '~/services/openai-chat-stream.server'
+import { AzureOpenAIChatStream } from '~/services/azure-openai-chat-stream.server'
 
 export const action = async ({ request }: ActionArgs) => {
   try {
@@ -10,7 +10,7 @@ export const action = async ({ request }: ActionArgs) => {
     invariant(input, 'Missing input')
 
     const systemPrompt = await getSystemPrompt()
-    const stream = await OpenAIChatStream(
+    const stream = await AzureOpenAIChatStream(
       {
         messages: [
           { role: 'system', content: systemPrompt },

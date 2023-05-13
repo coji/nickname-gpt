@@ -1,53 +1,49 @@
 import type { ParsedEvent, ReconnectInterval } from 'eventsource-parser'
 import { createParser } from 'eventsource-parser'
 import invariant from 'tiny-invariant'
-invariant(process.env.OPENAI_API_KEY, 'OPENAI_API_KEY should defined')
+import type { OpenAIMessage } from './openai-chat-stream.server'
+const AZURE_OPENAI_ENDPOINT = process.env.AZURE_OPENAI_ENDPOINT
+const AZURE_OPENAI_API_KEY = process.env.AZURE_OPENAI_API_KEY
+invariant(AZURE_OPENAI_ENDPOINT, 'AZURE_OPENAI_ENDPOINT should defined')
+invariant(AZURE_OPENAI_API_KEY)
 
-type Role = 'system' | 'user' | 'assistant'
-
-export interface OpenAIMessage {
-  role: Role
-  content: string
-}
-
-interface OpenAIStreamPayload {
+interface AzureOpenAIStreamPayload {
   messages: OpenAIMessage[]
-  model?: string
   temperature?: number
   top_p?: number
   frequency_penalty?: number
   presence_penalty?: number
   max_tokens?: number
+  stop: null | string
 }
 
-interface OpenAIChatResponseData {
+interface AzureOpenAIChatResponseData {
   choices: { delta: Partial<OpenAIMessage> }[]
 }
 
-interface OpenAIChatStreamOptions {
+interface AzureOpenAIChatStreamOptions {
   onComplete?: (message: string) => void
 }
 
-export const OpenAIChatStream = async (
+export const AzureOpenAIChatStream = async (
   {
-    model = 'gpt-3.5-turbo',
     temperature = 0.7,
-    top_p = 1,
+    top_p = 0.95,
     frequency_penalty = 0,
     presence_penalty = 0,
     max_tokens = 800,
     messages,
-  }: OpenAIStreamPayload,
-  options: OpenAIChatStreamOptions = {},
+    stop = null,
+  }: AzureOpenAIStreamPayload,
+  options: AzureOpenAIChatStreamOptions = {},
 ) => {
-  const res = await fetch('https://api.openai.com/v1/chat/completions', {
+  const res = await fetch(AZURE_OPENAI_ENDPOINT, {
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${process.env.OPENAI_API_KEY ?? ''}`,
+      'api-key': AZURE_OPENAI_API_KEY,
     },
     method: 'POST',
     body: JSON.stringify({
-      model,
       temperature,
       top_p,
       frequency_penalty,
@@ -60,6 +56,7 @@ export const OpenAIChatStream = async (
   })
 
   if (!res.ok) {
+    console.log(res)
     throw new Error(res.statusText)
   }
 
@@ -79,7 +76,7 @@ export const OpenAIChatStream = async (
             return
           }
           try {
-            const { choices } = JSON.parse(data) as OpenAIChatResponseData
+            const { choices } = JSON.parse(data) as AzureOpenAIChatResponseData
             const text = choices[0].delta.content
             if (!text || (counter < 2 && (text.match(/\n/) || []).length)) {
               return
