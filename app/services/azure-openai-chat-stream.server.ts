@@ -14,11 +14,18 @@ interface AzureOpenAIStreamPayload {
   frequency_penalty?: number
   presence_penalty?: number
   max_tokens?: number
-  stop: null | string
+  stop?: null | string
 }
 
 interface AzureOpenAIChatResponseData {
-  choices: { delta: Partial<OpenAIMessage> }[]
+  created: number
+  model: string
+  choices: {
+    index: number
+    finish_reason: 'stop' | null
+    delta: { content?: string }
+  }[]
+  usage: null
 }
 
 interface AzureOpenAIChatStreamOptions {
@@ -56,7 +63,6 @@ export const AzureOpenAIChatStream = async (
   })
 
   if (!res.ok) {
-    console.log(res)
     throw new Error(res.statusText)
   }
 
@@ -70,17 +76,19 @@ export const AzureOpenAIChatStream = async (
       function onEvent(event: ParsedEvent | ReconnectInterval) {
         if (event.type === 'event') {
           const data = event.data
-          if (data === '[DONE]') {
-            controller.close()
-            options.onComplete?.(message)
-            return
-          }
           try {
             const { choices } = JSON.parse(data) as AzureOpenAIChatResponseData
             const text = choices[0].delta.content
-            if (!text || (counter < 2 && (text.match(/\n/) || []).length)) {
+            if (text === undefined) {
+              // なぜか冒頭にもundefinedが入ってくるので無視する
+              if (choices[0].finish_reason === 'stop') {
+                // 完了
+                controller.close()
+                options.onComplete?.(message)
+              }
               return
             }
+
             message += text
             controller.enqueue(encoder.encode(text))
             counter++

@@ -13,7 +13,7 @@ export const action = async ({ request }: ActionArgs) => {
     const stream = await AzureOpenAIChatStream(
       {
         messages: [
-          { role: 'system', content: systemPrompt },
+          { role: 'user', content: systemPrompt },
           { role: 'user', content: input },
         ],
       },

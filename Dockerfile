@@ -1,6 +1,6 @@
 # base node image
-FROM node:18-slim as base
-ARG PNPM_VERSION=7.27.1
+FROM node:20-slim as base
+ARG PNPM_VERSION=8.5.0
 
 # Install openssl for Prisma
 RUN apt-get update \
