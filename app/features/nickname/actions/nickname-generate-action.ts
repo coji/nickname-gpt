@@ -1,28 +1,60 @@
 import { type ActionArgs } from '@remix-run/node'
-import invariant from 'tiny-invariant'
 import { getSystemPrompt } from '~/models/prompts.server'
 import { AzureOpenAIChatStream } from '~/services/azure-openai-chat-stream.server'
+import { OpenAIChatStream } from '~/services/openai-chat-stream.server'
 
 export const action = async ({ request }: ActionArgs) => {
   try {
     const formData = await request.formData()
     const input = formData.get('input')?.toString()
-    invariant(input, 'Missing input')
+    if (!input) {
+      throw new Response('Missing input', { status: 400 })
+    }
+    const provider = formData.get('provider')?.toString() ?? 'azure'
 
     const systemPrompt = await getSystemPrompt()
-    const stream = await AzureOpenAIChatStream(
-      {
-        messages: [
-          { role: 'user', content: systemPrompt },
-          { role: 'user', content: input },
-        ],
-      },
-      {
-        onComplete: (message) => {
-          console.log({ input, message })
+
+    let stream = null
+    if (provider === 'azure') {
+      stream = await AzureOpenAIChatStream(
+        {
+          temperature: 0,
+          top_p: 1,
+          frequency_penalty: 0,
+          presence_penalty: 0,
+          max_tokens: 800,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: input },
+          ],
         },
-      },
-    )
+        {
+          onComplete: (message) => {
+            console.log({ input, message })
+          },
+        },
+      )
+    } else {
+      stream = await OpenAIChatStream(
+        {
+          temperature: 0,
+          top_p: 1,
+          frequency_penalty: 0,
+          presence_penalty: 0,
+          max_tokens: 800,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: input },
+          ],
+        },
+        {
+          onComplete: (message) => {
+            console.log({ input, message })
+          },
+        },
+      )
+    }
+
     return stream
   } catch (error) {
     console.error('nickname generate action error: ', error)

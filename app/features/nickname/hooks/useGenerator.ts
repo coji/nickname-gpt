@@ -6,7 +6,7 @@ interface GeneratorState {
   isSuccess: boolean
 }
 
-export const useGenerator = () => {
+export const useGenerator = (provider: 'openai' | 'azure') => {
   const [data, setData] = useState<string | undefined>(undefined)
   const [error, setError] = useState<string | undefined>(undefined)
   const [state, setState] = useState<GeneratorState>({
@@ -21,6 +21,7 @@ export const useGenerator = () => {
 
     const formData = new FormData()
     formData.set('input', input)
+    formData.set('provider', provider)
 
     try {
       const response = await fetch('/api/generate', {

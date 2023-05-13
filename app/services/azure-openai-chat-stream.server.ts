@@ -35,12 +35,11 @@ interface AzureOpenAIChatStreamOptions {
 export const AzureOpenAIChatStream = async (
   {
     temperature = 0.7,
-    top_p = 0.95,
+    top_p = 1,
     frequency_penalty = 0,
     presence_penalty = 0,
     max_tokens = 800,
     messages,
-    stop = null,
   }: AzureOpenAIStreamPayload,
   options: AzureOpenAIChatStreamOptions = {},
 ) => {

@@ -3,7 +3,9 @@ import {
   Button,
   Container,
   FormControl,
+  Grid,
   HStack,
+  Heading,
   Input,
   Stack,
   Text,
@@ -24,12 +26,17 @@ export const loader = async ({ request }: LoaderArgs) => {
 }
 
 export default function Index() {
-  const { generate, isLoading, isError, data, error } = useGenerator()
   const [isFirstView, setIsFirstView] = useState(true)
+  const openai = useGenerator('openai')
+  const azure = useGenerator('azure')
 
-  const handleFormSubmit = async (formData: FormData) => {
+  const isLoading = openai.isLoading || azure.isLoading
+
+  const handleFormSubmit = (formData: FormData) => {
     setIsFirstView(false)
-    await generate(String(formData.get('input')))
+    const input = String(formData.get('input'))
+    void openai.generate(input)
+    void azure.generate(input)
   }
 
   return (
@@ -72,29 +79,55 @@ export default function Index() {
               </FormControl>
             </form>
 
-            {isError && (
-              <Box textAlign="center" color="red.500">
-                {error}
+            {isFirstView ? (
+              <Box textAlign="center" color="gray.700">
+                <Text>
+                  AI がかっこいいニックネームを考えます。Email や ID を入力して
+                  Submitしてください。
+                </Text>
+                <Text>入力されたデータはどこにも一切保存されません。</Text>
               </Box>
-            )}
+            ) : (
+              <Grid gridTemplateColumns="1fr 1fr" gap="4">
+                <Stack>
+                  <Heading size="md">OpenAI</Heading>
+                  {openai.isError && (
+                    <Box textAlign="center" color="red.500">
+                      {openai.error}
+                    </Box>
+                  )}
 
-            <Box>
-              {data === undefined && isLoading ? (
-                <Box textAlign="center" color="gray.700">
-                  Loading...
-                </Box>
-              ) : data === undefined ? (
-                <Box textAlign="center" color="gray.700">
-                  <Text>
-                    AI がかっこいいニックネームを考えます。Email や ID
-                    を入力して Submitしてください。
-                  </Text>
-                  <Text>入力されたデータはどこにも一切保存されません。</Text>
-                </Box>
-              ) : (
-                nl2br(data)
-              )}
-            </Box>
+                  <Box>
+                    {openai.data === undefined && openai.isLoading ? (
+                      <Box textAlign="center" color="gray.700">
+                        Loading...
+                      </Box>
+                    ) : (
+                      openai.data && nl2br(openai.data)
+                    )}
+                  </Box>
+                </Stack>
+
+                <Stack>
+                  <Heading size="md">Azure OpenAI</Heading>
+                  {azure.isError && (
+                    <Box textAlign="center" color="red.500">
+                      {azure.error}
+                    </Box>
+                  )}
+
+                  <Box>
+                    {azure.data === undefined && azure.isLoading ? (
+                      <Box textAlign="center" color="gray.700">
+                        Loading...
+                      </Box>
+                    ) : (
+                      azure.data && nl2br(azure.data)
+                    )}
+                  </Box>
+                </Stack>
+              </Grid>
+            )}
           </Stack>
         </Box>
 
