@@ -29,13 +29,13 @@ interface AzureOpenAIChatResponseData {
 }
 
 interface AzureOpenAIChatStreamOptions {
-  onComplete?: (message: string) => void
+  onComplete?: (message: string, start?: Date, finish?: Date) => void
 }
 
 export const AzureOpenAIChatStream = async (
   {
-    temperature = 0.7,
-    top_p = 1,
+    temperature = 0,
+    top_p = 0,
     frequency_penalty = 0,
     presence_penalty = 0,
     max_tokens = 800,
@@ -68,7 +68,7 @@ export const AzureOpenAIChatStream = async (
   const encoder = new TextEncoder()
   const decoder = new TextDecoder()
   let message = ''
-  let counter = 0
+  const start = new Date()
 
   const stream = new ReadableStream({
     async start(controller) {
@@ -79,18 +79,18 @@ export const AzureOpenAIChatStream = async (
             const { choices } = JSON.parse(data) as AzureOpenAIChatResponseData
             const text = choices[0].delta.content
             if (text === undefined) {
-              // なぜか冒頭にもundefinedが入ってくるので無視する
+              // なぜか冒頭にもundefinedが入ってくるので、finish_reason で判別
               if (choices[0].finish_reason === 'stop') {
                 // 完了
+                const finish = new Date()
                 controller.close()
-                options.onComplete?.(message)
+                options.onComplete?.(message, start, finish)
               }
               return
             }
 
             message += text
             controller.enqueue(encoder.encode(text))
-            counter++
           } catch (e) {
             controller.error(e)
           }

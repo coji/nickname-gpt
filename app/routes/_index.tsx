@@ -109,7 +109,7 @@ export default function Index() {
                 </Stack>
 
                 <Stack>
-                  <Heading size="md">Azure OpenAI</Heading>
+                  <Heading size="md">Azure</Heading>
                   {azure.isError && (
                     <Box textAlign="center" color="red.500">
                       {azure.error}

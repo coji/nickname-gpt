@@ -1,6 +1,6 @@
 import { type ActionArgs } from '@remix-run/node'
 import { getSystemPrompt } from '~/models/prompts.server'
-import { AzureOpenAIChatStream } from '~/services/azure-openai-chat-stream.server'
+import { AzureOpenAIChatStream } from '~/services/azure-chat-stream.server'
 import { OpenAIChatStream } from '~/services/openai-chat-stream.server'
 
 export const action = async ({ request }: ActionArgs) => {
@@ -19,7 +19,7 @@ export const action = async ({ request }: ActionArgs) => {
       stream = await AzureOpenAIChatStream(
         {
           temperature: 0,
-          top_p: 1,
+          top_p: 0,
           frequency_penalty: 0,
           presence_penalty: 0,
           max_tokens: 800,
@@ -29,8 +29,8 @@ export const action = async ({ request }: ActionArgs) => {
           ],
         },
         {
-          onComplete: (message) => {
-            console.log({ input, message })
+          onComplete: (message, start, stop) => {
+            console.log({ input, message, start, stop })
           },
         },
       )
@@ -38,7 +38,7 @@ export const action = async ({ request }: ActionArgs) => {
       stream = await OpenAIChatStream(
         {
           temperature: 0,
-          top_p: 1,
+          top_p: 0,
           frequency_penalty: 0,
           presence_penalty: 0,
           max_tokens: 800,
@@ -48,8 +48,8 @@ export const action = async ({ request }: ActionArgs) => {
           ],
         },
         {
-          onComplete: (message) => {
-            console.log({ input, message })
+          onComplete: (message, start, stop) => {
+            console.log({ input, message, start, stop })
           },
         },
       )
