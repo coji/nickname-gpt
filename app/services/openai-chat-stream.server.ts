@@ -36,7 +36,6 @@ export const OpenAIChatStream = async (
   {
     model = 'gpt-3.5-turbo-0301',
     temperature = 0,
-    top_p = 0,
     frequency_penalty = 0,
     presence_penalty = 0,
     max_tokens = 800,
@@ -53,7 +52,6 @@ export const OpenAIChatStream = async (
     body: JSON.stringify({
       model,
       temperature,
-      top_p,
       frequency_penalty,
       presence_penalty,
       max_tokens,

@@ -33,14 +33,7 @@ interface AzureOpenAIChatStreamOptions {
 }
 
 export const AzureOpenAIChatStream = async (
-  {
-    temperature = 0,
-    top_p = 0,
-    frequency_penalty = 0,
-    presence_penalty = 0,
-    max_tokens = 800,
-    messages,
-  }: AzureOpenAIStreamPayload,
+  { temperature = 0, max_tokens = 800, messages }: AzureOpenAIStreamPayload,
   options: AzureOpenAIChatStreamOptions = {},
 ) => {
   const res = await fetch(AZURE_OPENAI_ENDPOINT, {
@@ -51,9 +44,6 @@ export const AzureOpenAIChatStream = async (
     method: 'POST',
     body: JSON.stringify({
       temperature,
-      top_p,
-      frequency_penalty,
-      presence_penalty,
       max_tokens,
       n: 1,
       stream: true,
