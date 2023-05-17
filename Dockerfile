@@ -2,6 +2,9 @@
 FROM node:20-slim as base
 ARG PNPM_VERSION=8.5.0
 
+# set for base and all layer that inherit from it
+ENV NODE_ENV production
+
 # Install openssl for Prisma
 RUN apt-get update \
   && apt-get install --no-install-recommends -y procps vim-tiny \
@@ -21,7 +24,6 @@ RUN pnpm fetch
 # Setup production node_modules
 FROM base as production-deps
 
-ENV NODE_ENV "production"
 WORKDIR /app
 
 COPY --from=deps /app/node_modules /app/node_modules
