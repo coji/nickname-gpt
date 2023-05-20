@@ -1,5 +1,5 @@
 # base node image
-FROM node:20-slim as base
+FROM node:18-slim as base
 ARG PNPM_VERSION=8.5.0
 
 # set for base and all layer that inherit from it
