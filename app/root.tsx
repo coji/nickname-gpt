@@ -10,16 +10,9 @@ import {
 } from '@remix-run/react'
 
 export const meta: V2_MetaFunction = () => [
-  {
-    title: 'Nickname GPT',
-  },
-  {
-    charSet: 'utf-8',
-  },
-  {
-    name: 'viewport',
-    content: 'width=device-width,initial-scale=1',
-  },
+  { title: 'Nickname GPT' },
+  { charSet: 'utf-8' },
+  { name: 'viewport', content: 'width=device-width,initial-scale=1' },
   {
     name: 'description',
     content: 'AI generates nicknames from IDs and email addresses.',
