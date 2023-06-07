@@ -23,7 +23,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 
-.env*
+.env
+.env.me
+.env.previous
 .flaskenv*
 !.env.project
 !.env.vault
