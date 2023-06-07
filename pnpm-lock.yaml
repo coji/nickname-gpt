@@ -5,9 +5,18 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@chakra-ui/icons':
+    specifier: ^2.0.19
+    version: 2.0.19(@chakra-ui/system@2.5.8)(react@18.2.0)
   '@chakra-ui/react':
     specifier: ^2.7.0
     version: 2.7.0(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@types/react@18.2.8)(framer-motion@10.12.16)(react-dom@18.2.0)(react@18.2.0)
+  '@conform-to/react':
+    specifier: ^0.6.3
+    version: 0.6.3(react@18.2.0)
+  '@conform-to/zod':
+    specifier: ^0.6.3
+    version: 0.6.3(@conform-to/dom@0.6.3)(zod@3.21.4)
   '@emotion/react':
     specifier: ^11.11.1
     version: 11.11.1(@types/react@18.2.8)(react@18.2.0)
@@ -44,6 +53,9 @@ dependencies:
   compression:
     specifier: ^1.7.4
     version: 1.7.4
+  conform:
+    specifier: ^0.2.16
+    version: 0.2.16
   cross-env:
     specifier: ^7.0.3
     version: 7.0.3
@@ -104,6 +116,9 @@ dependencies:
   zod:
     specifier: ^3.21.4
     version: 3.21.4
+  zodix:
+    specifier: ^0.4.1
+    version: 0.4.1(@remix-run/server-runtime@1.17.0)(zod@3.21.4)
 
 devDependencies:
   '@remix-run/dev':
@@ -1841,6 +1856,17 @@ packages:
       react: 18.2.0
     dev: false
 
+  /@chakra-ui/icons@2.0.19(@chakra-ui/system@2.5.8)(react@18.2.0):
+    resolution: {integrity: sha512-0A6U1ZBZhLIxh3QgdjuvIEhAZi3B9v8g6Qvlfa3mu6vSnXQn2CHBZXmJwxpXxO40NK/2gj/gKXrLeUaFR6H/Qw==}
+    peerDependencies:
+      '@chakra-ui/system': '>=2.0.0'
+      react: '>=18'
+    dependencies:
+      '@chakra-ui/icon': 3.0.16(@chakra-ui/system@2.5.8)(react@18.2.0)
+      '@chakra-ui/system': 2.5.8(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(react@18.2.0)
+      react: 18.2.0
+    dev: false
+
   /@chakra-ui/image@2.0.16(@chakra-ui/system@2.5.8)(react@18.2.0):
     resolution: {integrity: sha512-iFypk1slgP3OK7VIPOtkB0UuiqVxNalgA59yoRM43xLIeZAEZpKngUVno4A2kFS61yKN0eIY4hXD3Xjm+25EJA==}
     peerDependencies:
@@ -2651,6 +2677,29 @@ packages:
     dependencies:
       '@chakra-ui/system': 2.5.8(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(react@18.2.0)
       react: 18.2.0
+    dev: false
+
+  /@conform-to/dom@0.6.3:
+    resolution: {integrity: sha512-8UbO8vTP0lwpJjzo0TIrQMqWQb65Gj6WpNEVfhHouTEkFTDCP9mND2kO6w1e4TgucRfIDKleYxcFee3lNZsBcw==}
+    dev: false
+
+  /@conform-to/react@0.6.3(react@18.2.0):
+    resolution: {integrity: sha512-s20D5nRDCa5JkkI+zMyHTaPqqaGgL+y8avenq8fr0r3keCxly/EcrbNH0aAr91OiTdiBD3+ar63XZLZbtx8hDQ==}
+    peerDependencies:
+      react: '>=16.8'
+    dependencies:
+      '@conform-to/dom': 0.6.3
+      react: 18.2.0
+    dev: false
+
+  /@conform-to/zod@0.6.3(@conform-to/dom@0.6.3)(zod@3.21.4):
+    resolution: {integrity: sha512-x8HmWuYt/qJVZBB+EG5k0BKCgRUJLVsvy+d6Foqg/Ih/G1xcyPesv7YX/AborurbIiZEuO75Tws1yuZ1AAaIUw==}
+    peerDependencies:
+      '@conform-to/dom': 0.6.3
+      zod: ^3.21.0
+    dependencies:
+      '@conform-to/dom': 0.6.3
+      zod: 3.21.4
     dev: false
 
   /@cspotcode/source-map-support@0.8.1:
@@ -5061,6 +5110,11 @@ packages:
       semver: 7.5.1
       well-known-symbols: 2.0.0
     dev: true
+
+  /conform@0.2.16:
+    resolution: {integrity: sha512-+XHzIH2PY4HgFDY0In0n7TGX+UNY8Joycfiki6ew7aK/rBHoMFPjpRwjYjFprciNnUkvMLzSsBDuBCbNTiTO8w==}
+    engines: {node: '>= 0.4.0'}
+    dev: false
 
   /content-disposition@0.5.4:
     resolution: {integrity: sha512-FveZTNuGw04cxlAiWbzi6zTAL/lhehaWbTtgluJh4/E95DqMwTmha3KZN1aAWA8cFIhHzMZUvLevkw5Rqk+tSQ==}
@@ -10870,6 +10924,16 @@ packages:
 
   /zod@3.21.4:
     resolution: {integrity: sha512-m46AKbrzKVzOzs/DZgVnG5H55N1sv1M8qZU3A8RIKbs3mrACDNeIOeilDymVb2HdmP8uwshOCF4uJ8uM9rCqJw==}
+    dev: false
+
+  /zodix@0.4.1(@remix-run/server-runtime@1.17.0)(zod@3.21.4):
+    resolution: {integrity: sha512-YanL8q3BhejzcGY/2rB3cgR3wRQaoHfDD32A7DQX2GJNBZ3Ca1T2t/hG3V7OHFi+E24J+BiEYzDlE2Htgj6kYQ==}
+    peerDependencies:
+      '@remix-run/server-runtime': 1.x
+      zod: 3.x
+    dependencies:
+      '@remix-run/server-runtime': 1.17.0
+      zod: 3.21.4
     dev: false
 
   /zwitch@2.0.4:

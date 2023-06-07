@@ -65,6 +65,12 @@ export const AppLoginPane = (props: StackProps) => {
             </Stack>
           </MenuItem>
           <MenuDivider />
+          <MenuItem>
+            <Text as={Link} to="/admin">
+              システムプロンプトの編集
+            </Text>
+          </MenuItem>
+          <MenuDivider />
           <MenuItem as={Link} to="/auth/logout">
             Sign Out
           </MenuItem>
