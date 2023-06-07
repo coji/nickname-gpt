@@ -26,12 +26,11 @@ jobs:
         name: Install pnpm
         id: pnpm-install
         with:
-          version: 8
+          version: 8.6.1
           run_install: false
 
       - name: Get pnpm store directory
         id: pnpm-cache
-        shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
 
@@ -74,7 +73,7 @@ jobs:
         name: Install pnpm
         id: pnpm-install
         with:
-          version: 8
+          version: 8.6.1
           run_install: false
 
       - name: Get pnpm store directory
