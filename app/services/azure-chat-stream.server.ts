@@ -33,7 +33,13 @@ interface AzureOpenAIChatStreamOptions {
 }
 
 export const AzureOpenAIChatStream = async (
-  { temperature = 0, max_tokens = 800, messages }: AzureOpenAIStreamPayload,
+  {
+    temperature = 0,
+    frequency_penalty = 0,
+    presence_penalty = 0,
+    max_tokens = 800,
+    messages,
+  }: AzureOpenAIStreamPayload,
   options: AzureOpenAIChatStreamOptions = {},
 ) => {
   const res = await fetch(AZURE_OPENAI_ENDPOINT, {
@@ -44,6 +50,8 @@ export const AzureOpenAIChatStream = async (
     method: 'POST',
     body: JSON.stringify({
       temperature,
+      frequency_penalty,
+      presence_penalty,
       max_tokens,
       n: 1,
       stream: true,
@@ -68,14 +76,11 @@ export const AzureOpenAIChatStream = async (
           try {
             const { choices } = JSON.parse(data) as AzureOpenAIChatResponseData
             const text = choices[0].delta.content
-            if (text === undefined) {
-              // なぜか冒頭にもundefinedが入ってくるので、finish_reason で判別
-              if (choices[0].finish_reason === 'stop') {
-                // 完了
-                const finish = new Date()
-                controller.close()
-                options.onComplete?.(message, start, finish)
-              }
+            if (text === undefined && choices[0].finish_reason === 'stop') {
+              // 完了
+              const finish = new Date()
+              controller.close()
+              options.onComplete?.(message, start, finish)
               return
             }
 

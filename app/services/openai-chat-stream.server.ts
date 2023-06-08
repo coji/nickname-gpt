@@ -18,6 +18,7 @@ interface OpenAIStreamPayload {
   frequency_penalty?: number
   presence_penalty?: number
   max_tokens?: number
+  stop?: null | string
 }
 
 interface OpenAIChatResponseData {
@@ -78,16 +79,14 @@ export const OpenAIChatStream = async (
           try {
             const { choices } = JSON.parse(data) as OpenAIChatResponseData
             const text = choices[0].delta.content
-            if (text === undefined) {
-              // なぜか冒頭にもundefinedが入ってくるので、finish_reason で判別
-              if (choices[0].finish_reason === 'stop') {
-                // 完了
-                const finish = new Date()
-                controller.close()
-                options.onComplete?.(message, start, finish)
-              }
+            if (text === undefined && choices[0].finish_reason === 'stop') {
+              // 完了
+              const finish = new Date()
+              controller.close()
+              options.onComplete?.(message, start, finish)
               return
             }
+
             message += text
             controller.enqueue(encoder.encode(text))
           } catch (e) {
