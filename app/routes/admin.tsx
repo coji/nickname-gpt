@@ -71,18 +71,24 @@ export default function AdminIndexPage() {
           icon={<ArrowBackIcon />}
           colorScheme="gray"
           rounded="full"
+          variant="ghost"
         />
         <Heading size={['md', 'lg']}>システムプロンプトの編集</Heading>
       </HStack>
 
       <Form method="POST" {...form.props}>
         <Flex direction="column" h="full" pb="4" gap="2">
-          <FormControl isInvalid={!!prompt.error} flex="1" display="flex">
+          <FormControl
+            isInvalid={!!prompt.error}
+            flex="1"
+            flexDirection="column"
+            display="flex"
+          >
             <Textarea
               id="prompt"
               name="prompt"
               defaultValue={prompt.defaultValue}
-              h="full"
+              flex="1"
             />
             <FormErrorMessage>{prompt.error}</FormErrorMessage>
           </FormControl>
