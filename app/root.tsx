@@ -1,5 +1,5 @@
 import { ChakraProvider } from '@chakra-ui/react'
-import { json, type LoaderArgs, type V2_MetaFunction } from '@remix-run/node'
+import { type V2_MetaFunction } from '@remix-run/node'
 import {
   Links,
   LiveReload,
@@ -8,6 +8,7 @@ import {
   Scripts,
   ScrollRestoration,
 } from '@remix-run/react'
+import { createHead } from 'remix-island'
 
 export const meta: V2_MetaFunction = () => [
   { title: 'Nickname GPT' },
@@ -19,34 +20,23 @@ export const meta: V2_MetaFunction = () => [
   },
 ]
 
-interface DocumentProps {
-  children: React.ReactNode
-}
-
-export const loader = ({ request, context }: LoaderArgs) => json({})
-const Document = ({ children }: DocumentProps) => {
-  return (
-    <html lang="ja">
-      <head>
-        <Meta />
-        <Links />
-      </head>
-      <body>
-        {children}
-        <ScrollRestoration />
-        <Scripts />
-        <LiveReload />
-      </body>
-    </html>
-  )
-}
+export const Head = createHead(() => (
+  <>
+    <Meta />
+    <Links />
+  </>
+))
 
 export default function App() {
   return (
-    <Document>
+    <>
+      <Head />
       <ChakraProvider resetCSS>
         <Outlet />
       </ChakraProvider>
-    </Document>
+      <ScrollRestoration />
+      <Scripts />
+      <LiveReload />
+    </>
   )
 }
