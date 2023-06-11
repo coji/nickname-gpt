@@ -1,5 +1,6 @@
 import { ChakraProvider } from '@chakra-ui/react'
-import { type V2_MetaFunction } from '@remix-run/node'
+import type { LoaderArgs } from '@remix-run/node'
+import { json, type V2_MetaFunction } from '@remix-run/node'
 import {
   Links,
   LiveReload,
@@ -9,6 +10,8 @@ import {
   ScrollRestoration,
 } from '@remix-run/react'
 import { createHead } from 'remix-island'
+import { authenticator } from './services/auth.server'
+import { keepAwake } from './services/shrink-to-zero.server'
 
 export const meta: V2_MetaFunction = () => [
   { title: 'Nickname GPT' },
@@ -26,6 +29,14 @@ export const Head = createHead(() => (
     <Links />
   </>
 ))
+
+export const loader = async ({ request }: LoaderArgs) => {
+  keepAwake()
+  const sessionUser = await authenticator.isAuthenticated(request)
+  return json({
+    user: sessionUser,
+  })
+}
 
 export default function App() {
   return (

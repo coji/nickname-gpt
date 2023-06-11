@@ -11,11 +11,11 @@ import {
   Text,
 } from '@chakra-ui/react'
 import { Link, useNavigation } from '@remix-run/react'
-import { useUser } from '~/hooks/use-user'
+import { useSessionUser } from '~/hooks/use-session-user'
 
 export const AppLoginPane = (props: StackProps) => {
   const navigation = useNavigation()
-  const user = useUser()
+  const user = useSessionUser()
 
   if (!user) {
     return (

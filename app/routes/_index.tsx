@@ -10,20 +10,10 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react'
-import { json, type LoaderArgs } from '@remix-run/node'
 import { useState } from 'react'
 import nl2br from 'react-nl2br'
 import { AppFooter, AppHeader, AppLoginPane } from '~/components'
 import { useGenerator } from '~/features/nickname/hooks/useGenerator'
-import { authenticator } from '~/services/auth.server'
-
-export const loader = async ({ request }: LoaderArgs) => {
-  const sessionUser = await authenticator.isAuthenticated(request)
-
-  return json({
-    user: sessionUser,
-  })
-}
 
 export default function Index() {
   const [isFirstView, setIsFirstView] = useState(true)
