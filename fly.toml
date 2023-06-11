@@ -11,10 +11,6 @@ processes = []
 [deploy]
 release_command = "npx prisma migrate deploy"
 
-[mounts]
-  source = "data"
-  destination = "/app/data"
-
 [experimental]
   auto_rollback = true
 
