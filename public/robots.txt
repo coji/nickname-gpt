@@ -1,0 +1,9 @@
+User-agent: Googlebot
+User-agent: AdsBot-Google
+Disallow: /admin
+Disallow: /admin/
+Disallow: /api/
+Disallow: /auth/
+
+User-agent: *
+Allow: /
