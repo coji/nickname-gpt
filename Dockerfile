@@ -4,7 +4,7 @@ ARG PNPM_VERSION=8.6.1
 
 # Install openssl for Prisma
 RUN apt-get update \
-  && apt-get install --no-install-recommends -y procps vim-tiny sqlite3 \
+  && apt-get install --no-install-recommends -y openssl procps vim-tiny sqlite3 \
   && apt-get clean \
   && npm i -g pnpm@${PNPM_VERSION} \
   && rm -rf /var/lib/apt/lists/*
