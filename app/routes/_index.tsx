@@ -1,4 +1,5 @@
 import {
+  Badge,
   Box,
   Button,
   Container,
@@ -80,7 +81,13 @@ export default function Index() {
             ) : (
               <Grid gridTemplateColumns="1fr 1fr" gap="4">
                 <Stack>
-                  <Heading size="md">OpenAI</Heading>
+                  <Heading size="md">
+                    OpenAI{' '}
+                    <Text color="gray.500" fontSize="xs" display="inline">
+                      gpt-3.5-turbo-0613
+                    </Text>{' '}
+                    <Badge colorScheme="red">New</Badge>
+                  </Heading>
                   {openai.isError && (
                     <Box textAlign="center" color="red.500">
                       {openai.error}
@@ -99,7 +106,12 @@ export default function Index() {
                 </Stack>
 
                 <Stack>
-                  <Heading size="md">Azure</Heading>
+                  <Heading size="md">
+                    Azure{' '}
+                    <Text color="gray.500" fontSize="xs" display="inline">
+                      gpt-35-turbo
+                    </Text>
+                  </Heading>
                   {azure.isError && (
                     <Box textAlign="center" color="red.500">
                       {azure.error}
