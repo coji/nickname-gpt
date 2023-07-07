@@ -26,6 +26,7 @@ export const action = async ({ request }: ActionArgs) => {
           messages: [
             { role: 'system', content: systemPrompt },
             { role: 'user', content: input },
+            { role: 'system', content: '出力は日本語です' },
           ],
         },
         {
@@ -45,6 +46,7 @@ export const action = async ({ request }: ActionArgs) => {
           messages: [
             { role: 'system', content: systemPrompt },
             { role: 'user', content: input },
+            { role: 'system', content: '出力は日本語です' },
           ],
         },
         {
