@@ -1,6 +1,11 @@
+/* eslint-disable @typescript-eslint/require-await */
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { flatRoutes } = require('remix-flat-routes')
+
 /** @type {import('@remix-run/dev').AppConfig} */
 module.exports = {
-  ignoredRouteFiles: ['**/.*'],
+  ignoredRouteFiles: ['**/*'],
+  routes: async (defineRoutes) => flatRoutes('routes', defineRoutes),
   serverModuleFormat: 'cjs',
   future: {
     v2_errorBoundary: true,
@@ -8,6 +13,6 @@ module.exports = {
     v2_routeConvention: true,
     v2_normalizeFormMethod: true,
     v2_headers: true,
-    unstable_dev: true,
+    v2_dev: true,
   },
 }

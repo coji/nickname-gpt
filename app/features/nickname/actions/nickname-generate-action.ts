@@ -1,17 +1,17 @@
 import { type ActionArgs } from '@remix-run/node'
+import { z } from 'zod'
+import { zx } from 'zodix'
 import { getSystemPrompt } from '~/models/prompts.server'
 import { AzureOpenAIChatStream } from '~/services/azure-chat-stream.server'
 import { OpenAIChatStream } from '~/services/openai-chat-stream.server'
 
 export const action = async ({ request }: ActionArgs) => {
-  try {
-    const formData = await request.formData()
-    const input = formData.get('input')?.toString()
-    if (!input) {
-      throw new Response('Missing input', { status: 400 })
-    }
-    const provider = formData.get('provider')?.toString() ?? 'azure'
+  const { input, provider } = await zx.parseForm(request, {
+    input: z.string().nonempty('Missing input'),
+    provider: z.enum(['azure', 'openai']),
+  })
 
+  try {
     const systemPrompt = await getSystemPrompt()
 
     let stream = null
@@ -26,7 +26,6 @@ export const action = async ({ request }: ActionArgs) => {
           messages: [
             { role: 'system', content: systemPrompt },
             { role: 'user', content: input },
-            { role: 'system', content: '出力は日本語です' },
           ],
         },
         {

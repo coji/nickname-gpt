@@ -1,5 +1,4 @@
 import {
-  Badge,
   Box,
   Button,
   Container,
@@ -85,8 +84,7 @@ export default function Index() {
                     OpenAI{' '}
                     <Text color="gray.500" fontSize="xs" display="inline">
                       gpt-3.5-turbo-0613
-                    </Text>{' '}
-                    <Badge colorScheme="red">New</Badge>
+                    </Text>
                   </Heading>
                   {openai.isError && (
                     <Box textAlign="center" color="red.500">
@@ -109,7 +107,7 @@ export default function Index() {
                   <Heading size="md">
                     Azure{' '}
                     <Text color="gray.500" fontSize="xs" display="inline">
-                      gpt-35-turbo
+                      gpt-35-turbo 0613
                     </Text>
                   </Heading>
                   {azure.isError && (
