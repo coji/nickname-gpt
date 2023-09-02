@@ -4,7 +4,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".eslintrc.js",
-    "prettier.config.mjs",
+    "prettier.config.js",
     "remix.config.js",
     "prisma/seed.js"
   ],
