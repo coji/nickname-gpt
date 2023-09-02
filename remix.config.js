@@ -15,4 +15,6 @@ module.exports = {
     v2_headers: true,
     v2_dev: true,
   },
+  tailwind: true,
+  postcss: true,
 }

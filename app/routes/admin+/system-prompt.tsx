@@ -1,20 +1,13 @@
-import { ArrowBackIcon } from '@chakra-ui/icons'
-import {
-  Button,
-  Container,
-  Flex,
-  FormControl,
-  FormErrorMessage,
-  HStack,
-  Heading,
-  IconButton,
-  Stack,
-  Textarea,
-} from '@chakra-ui/react'
+import { ArrowLeftIcon } from 'lucide-react'
+import { Button, HStack, Heading, Textarea } from '~/components/ui'
 import { useForm } from '@conform-to/react'
 import { parse } from '@conform-to/zod'
-import type { ActionArgs, LoaderArgs } from '@remix-run/node'
-import { json, redirect } from '@remix-run/node'
+import {
+  type ActionArgs,
+  type LoaderArgs,
+  json,
+  redirect,
+} from '@remix-run/node'
 import { Form, Link, useLoaderData } from '@remix-run/react'
 import { z } from 'zod'
 import { getSystemPrompt, upsertSystemPrompt } from '~/models/prompts.server'
@@ -57,52 +50,38 @@ export default function AdminIndexPage() {
   })
 
   return (
-    <Container
-      maxW="container.md"
-      display="grid"
-      minH="100dvh"
-      gridTemplateRows="auto 1fr"
-    >
-      <HStack align="center" py="4" gap="4">
-        <IconButton
-          as={Link}
-          to="/"
-          aria-label="back"
-          icon={<ArrowBackIcon />}
-          colorScheme="gray"
-          rounded="full"
-          variant="ghost"
-        />
-        <Heading size={['md', 'lg']}>システムプロンプトの編集</Heading>
+    <div className="container grid grid-rows-[auto,1fr] min-h-screen">
+      <HStack className="py-4 gap-4">
+        <Button asChild variant="ghost" size="icon" className="rounded-full">
+          <Link to="/">
+            <ArrowLeftIcon />
+          </Link>
+        </Button>
+        <Heading>システムプロンプトの編集</Heading>
       </HStack>
 
       <Form method="POST" {...form.props}>
-        <Flex direction="column" h="full" pb="4" gap="2">
-          <FormControl
-            isInvalid={!!prompt.error}
-            flex="1"
-            flexDirection="column"
-            display="flex"
-          >
+        <div className="flex flex-col h-full pb-4 gap-2">
+          <fieldset className="flex flex-col flex-1">
             <Textarea
+              className="flex-1"
               id="prompt"
               name="prompt"
               defaultValue={prompt.defaultValue}
-              flex="1"
             />
-            <FormErrorMessage>{prompt.error}</FormErrorMessage>
-          </FormControl>
+            <p className="text-destructive">{prompt.error}</p>
+          </fieldset>
 
-          <Stack display="grid" gridTemplateColumns="1fr 1fr">
-            <Button as={Link} to="/">
-              キャンセル
+          <HStack>
+            <Button type="button" asChild className="flex-1">
+              <Link to="/">キャンセル</Link>
             </Button>
-            <Button type="submit" colorScheme="blue">
+            <Button type="submit" variant="default" className="flex-1">
               更新
             </Button>
-          </Stack>
-        </Flex>
+          </HStack>
+        </div>
       </Form>
-    </Container>
+    </div>
   )
 }

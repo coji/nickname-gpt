@@ -1,20 +1,19 @@
-import type { BoxProps } from '@chakra-ui/react'
-import { Box, Heading } from '@chakra-ui/react'
+import type { HTMLAttributes } from 'react'
+import { Heading } from '~/components/ui'
 
-interface AppHeaderProps extends BoxProps {
+interface AppHeaderProps extends HTMLAttributes<HTMLElement> {
   layout?: 'normal' | 'shrink'
 }
 export const AppHeader = ({ layout = 'normal', ...rest }: AppHeaderProps) => {
   return (
-    <Box {...rest}>
+    <header {...rest}>
       <Heading
-        transition="all"
-        transitionDuration="1000ms"
-        py={layout === 'normal' ? '16' : '2'}
-        textAlign="center"
+        className={`transition-transform duration-1000 text-center ${
+          layout === 'normal' ? 'py-16' : 'py-2'
+        }`}
       >
         Nickname GPT
       </Heading>
-    </Box>
+    </header>
   )
 }

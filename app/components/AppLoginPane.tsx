@@ -1,86 +1,64 @@
-import type { StackProps } from '@chakra-ui/react'
 import {
   Avatar,
+  AvatarImage,
   Button,
-  Menu,
-  MenuButton,
-  MenuDivider,
-  MenuItem,
-  MenuList,
-  Stack,
-  Text,
-} from '@chakra-ui/react'
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuItem,
+  DropdownMenuContent,
+} from '~/components/ui'
 import { Link, useNavigation } from '@remix-run/react'
 import { useSessionUser } from '~/hooks/use-session-user'
 
-export const AppLoginPane = (props: StackProps) => {
+export const AppLoginPane = (props: React.HTMLAttributes<HTMLDivElement>) => {
   const navigation = useNavigation()
   const user = useSessionUser()
 
   if (!user) {
     return (
-      <Stack
-        direction="row"
-        justify="end"
-        align="center"
-        fontSize="sm"
-        color="gray.500"
-        {...props}
-      >
+      <div {...props}>
         <Button
-          as={Link}
-          to="/auth/google"
-          size="sm"
-          type="submit"
+          asChild
           variant="outline"
-          isLoading={
+          size="xs"
+          disabled={
             navigation.state !== 'idle' &&
             navigation.location.pathname === '/auth/google'
           }
         >
-          Sign in
+          <Link to="/auth/google">Sign in</Link>
         </Button>
-      </Stack>
+      </div>
     )
   }
 
   return (
-    <Stack
-      direction="row"
-      justify="end"
-      align="center"
-      fontSize="sm"
-      color="gray.500"
-      {...props}
-    >
-      <Menu>
-        <MenuButton>
-          <Avatar size="sm" src={user.photoUrl}></Avatar>
-        </MenuButton>
-        <MenuList>
-          <MenuItem>
-            <Stack spacing="0">
-              <Text>{user.displayName}</Text>
-              <Text fontSize="xs">{user.email}</Text>
-            </Stack>
-          </MenuItem>
-          <MenuDivider />
-          <MenuItem as={Link} to="/admin/system-prompt">
-            システムプロンプトの編集
-          </MenuItem>
-          <MenuDivider />
-          <MenuItem as={Link} to="/auth/logout">
-            Sign Out
-          </MenuItem>
-        </MenuList>
-      </Menu>
+    <div {...props}>
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <Avatar className="h-8 w-8">
+            <AvatarImage src={user.photoUrl} alt={user.displayName} />
+          </Avatar>
+        </DropdownMenuTrigger>
 
-      {/* <>
-        <Box>Signed in as {session.user.email} </Box>
-        <Button size="sm" variant="outline" onClick={() => signOut()}>
-          Sign out
-        </Button>
-      </> */}
-    </Stack>
+        <DropdownMenuContent>
+          <DropdownMenuItem>
+            <div>
+              <p>{user.displayName}</p>
+              <p className="text-xs">{user.email}</p>
+            </div>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem asChild>
+            <Link to="/admin/system-prompt">システムプロンプトの編集</Link>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem asChild>
+            <Link to="/auth/logout">Sign Out</Link>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
   )
 }

@@ -1,19 +1,25 @@
-import { Box, Link } from '@chakra-ui/react'
-
 export const AppFooter = () => {
   return (
-    <Box textAlign="center" p="2" pt="8">
-      <Box>
+    <footer className="text-center p-2 pt-8">
+      <div>
         Copyright ©{' '}
-        <Link href="https://twitter.com/techtalkjp" color="blue.500">
+        <a
+          href="https://twitter.com/techtalkjp"
+          target="_blank"
+          rel="noreferrer"
+        >
           coji
-        </Link>{' '}
-      </Box>
-      <Box>
-        <Link href="https://github.com/coji/nickname-gpt" color="blue.500">
+        </a>{' '}
+      </div>
+      <div>
+        <a
+          href="https://github.com/coji/nickname-gpt"
+          target="_blank"
+          rel="noreferrer"
+        >
           GitHub
-        </Link>
-      </Box>
-    </Box>
+        </a>
+      </div>
+    </footer>
   )
 }

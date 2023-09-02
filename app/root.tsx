@@ -1,5 +1,9 @@
-import { ChakraProvider } from '@chakra-ui/react'
-import { json, type V2_MetaFunction, type LoaderArgs } from '@remix-run/node'
+import {
+  type LinksFunction,
+  type V2_MetaFunction,
+  type LoaderArgs,
+  json,
+} from '@remix-run/node'
 import {
   Links,
   LiveReload,
@@ -10,7 +14,11 @@ import {
 } from '@remix-run/react'
 import { createHead } from 'remix-island'
 import { authenticator } from './services/auth.server'
-import { keepAwake } from './services/shrink-to-zero.server'
+import globalCss from './styles/globals.css'
+
+export const links: LinksFunction = () => [
+  { rel: 'stylesheet', href: globalCss },
+]
 
 export const meta: V2_MetaFunction = () => [
   { title: 'Nickname GPT' },
@@ -30,20 +38,15 @@ export const Head = createHead(() => (
 ))
 
 export const loader = async ({ request }: LoaderArgs) => {
-  keepAwake()
   const sessionUser = await authenticator.isAuthenticated(request)
-  return json({
-    user: sessionUser,
-  })
+  return json({ user: sessionUser })
 }
 
 export default function App() {
   return (
     <>
       <Head />
-      <ChakraProvider resetCSS>
-        <Outlet />
-      </ChakraProvider>
+      <Outlet />
       <ScrollRestoration />
       <Scripts />
       <LiveReload />

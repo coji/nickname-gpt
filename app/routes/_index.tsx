@@ -1,15 +1,4 @@
-import {
-  Box,
-  Button,
-  Container,
-  FormControl,
-  Grid,
-  HStack,
-  Heading,
-  Input,
-  Stack,
-  Text,
-} from '@chakra-ui/react'
+import { Button, HStack, Heading, Input, Stack } from '~/components/ui'
 import { useState } from 'react'
 import nl2br from 'react-nl2br'
 import { AppFooter, AppHeader, AppLoginPane } from '~/components'
@@ -30,109 +19,90 @@ export default function Index() {
   }
 
   return (
-    <>
-      <Container
-        maxW="container.md"
-        display="grid"
-        gridTemplateRows="auto auto 1fr auto"
-        h="100dvh"
-      >
-        <AppLoginPane py="2" />
-        <AppHeader layout={isFirstView ? 'normal' : 'shrink'} />
+    <div className="container grid grid-rows-[auto,auto,1fr,auto] h-screen">
+      <AppLoginPane className="text-right py-2" />
+      <AppHeader layout={isFirstView ? 'normal' : 'shrink'} />
 
-        <Box h="full" p="2">
-          <Stack spacing="16">
-            <form
-              onSubmit={(e) => {
-                e.preventDefault()
-                const formData = new FormData(e.target as HTMLFormElement)
-                void handleFormSubmit(formData)
-              }}
-              noValidate
-              autoComplete="off"
-            >
-              <FormControl>
-                <HStack>
-                  <Input
-                    name="input"
-                    autoFocus
-                    placeholder="あなたの名前、メールアドレス、ID などを入力してください"
-                  />
-                  <Button
-                    type="submit"
-                    colorScheme="blue"
-                    isLoading={isLoading}
-                  >
-                    Submit
-                  </Button>
-                </HStack>
-              </FormControl>
-            </form>
+      <main className="h-full p-2">
+        <Stack gap="16">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              const formData = new FormData(e.target as HTMLFormElement)
+              void handleFormSubmit(formData)
+            }}
+            noValidate
+            autoComplete="off"
+          >
+            <fieldset>
+              <HStack>
+                <Input
+                  name="input"
+                  autoFocus
+                  placeholder="あなたの名前、メールアドレス、ID などを入力してください"
+                />
+                <Button type="submit" disabled={isLoading}>
+                  Submit
+                </Button>
+              </HStack>
+            </fieldset>
+          </form>
 
-            {isFirstView ? (
-              <Box textAlign="center" color="gray.700">
-                <Text>
-                  AI がかっこいいニックネームを考えます。Email や ID を入力して
-                  Submitしてください。
-                </Text>
-                <Text>入力されたデータはどこにも一切保存されません。</Text>
-              </Box>
-            ) : (
-              <Grid gridTemplateColumns="1fr 1fr" gap="4">
-                <Stack>
-                  <Heading size="md">
-                    OpenAI{' '}
-                    <Text color="gray.500" fontSize="xs" display="inline">
-                      gpt-3.5-turbo-0613
-                    </Text>
-                  </Heading>
-                  {openai.isError && (
-                    <Box textAlign="center" color="red.500">
-                      {openai.error}
-                    </Box>
+          {isFirstView ? (
+            <div className="text-center text-slate-700">
+              <p>
+                AI がかっこいいニックネームを考えます。Email や ID を入力して
+                Submitしてください。
+              </p>
+              <p>入力されたデータはどこにも一切保存されません。</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-[1fr_1fr] gap-4">
+              <Stack>
+                <Heading size="md">
+                  OpenAI{' '}
+                  <span className="text-slate-500 text-xs">gpt-3.5-turbo</span>
+                </Heading>
+                {openai.isError && (
+                  <div className="text-center text-destructive">
+                    {openai.error}
+                  </div>
+                )}
+
+                <div>
+                  {openai.data === undefined && openai.isLoading ? (
+                    <div className="text-center text-slate-700">Loading...</div>
+                  ) : (
+                    openai.data && nl2br(openai.data)
                   )}
+                </div>
+              </Stack>
 
-                  <Box>
-                    {openai.data === undefined && openai.isLoading ? (
-                      <Box textAlign="center" color="gray.700">
-                        Loading...
-                      </Box>
-                    ) : (
-                      openai.data && nl2br(openai.data)
-                    )}
-                  </Box>
-                </Stack>
+              <Stack>
+                <Heading size="md">
+                  Azure{' '}
+                  <span className="text-slate-500 text-xs">gpt-35-turbo</span>
+                </Heading>
+                {azure.isError && (
+                  <div className="text-center text-destructive">
+                    {azure.error}
+                  </div>
+                )}
 
-                <Stack>
-                  <Heading size="md">
-                    Azure{' '}
-                    <Text color="gray.500" fontSize="xs" display="inline">
-                      gpt-35-turbo 0613
-                    </Text>
-                  </Heading>
-                  {azure.isError && (
-                    <Box textAlign="center" color="red.500">
-                      {azure.error}
-                    </Box>
+                <div>
+                  {azure.data === undefined && azure.isLoading ? (
+                    <div className="text-center text-slate-700">Loading...</div>
+                  ) : (
+                    azure.data && nl2br(azure.data)
                   )}
+                </div>
+              </Stack>
+            </div>
+          )}
+        </Stack>
+      </main>
 
-                  <Box>
-                    {azure.data === undefined && azure.isLoading ? (
-                      <Box textAlign="center" color="gray.700">
-                        Loading...
-                      </Box>
-                    ) : (
-                      azure.data && nl2br(azure.data)
-                    )}
-                  </Box>
-                </Stack>
-              </Grid>
-            )}
-          </Stack>
-        </Box>
-
-        <AppFooter />
-      </Container>
-    </>
+      <AppFooter />
+    </div>
   )
 }

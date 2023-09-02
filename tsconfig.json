@@ -1,13 +1,5 @@
 {
-  "include": [
-    "remix.env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".eslintrc.js",
-    "prettier.config.js",
-    "remix.config.js",
-    "prisma/seed.js"
-  ],
+  "include": ["*", "app/**/*"],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2019"],
     "types": ["vitest/globals"],
