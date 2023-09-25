@@ -75,8 +75,11 @@ export const AzureOpenAIChatStream = async (
           const data = event.data
           try {
             const { choices } = JSON.parse(data) as AzureOpenAIChatResponseData
-            const text = choices[0].delta.content
-            if (text === undefined && choices[0].finish_reason === 'stop') {
+            if (choices.length === 0) {
+              return
+            }
+            const text = choices[0].delta?.content
+            if (text === undefined || choices[0].finish_reason === 'stop') {
               // 完了
               const finish = new Date()
               controller.close()

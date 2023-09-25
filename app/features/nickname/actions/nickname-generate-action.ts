@@ -1,11 +1,11 @@
-import { type ActionArgs } from '@remix-run/node'
+import { type ActionFunctionArgs } from '@remix-run/node'
 import { z } from 'zod'
 import { zx } from 'zodix'
 import { getSystemPrompt } from '~/models/prompts.server'
 import { AzureOpenAIChatStream } from '~/services/azure-chat-stream.server'
 import { OpenAIChatStream } from '~/services/openai-chat-stream.server'
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const { input, provider } = await zx.parseForm(request, {
     input: z.string().nonempty('Missing input'),
     provider: z.enum(['azure', 'openai']),

@@ -1,4 +1,5 @@
-import { type EntryContext, Response } from '@remix-run/node'
+import { type EntryContext } from '@remix-run/node'
+import { Response } from '@remix-run/web-fetch'
 import { RemixServer } from '@remix-run/react'
 import isbot from 'isbot'
 import { renderToPipeableStream } from 'react-dom/server'

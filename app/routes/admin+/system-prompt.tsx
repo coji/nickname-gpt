@@ -3,8 +3,8 @@ import { Button, HStack, Heading, Textarea } from '~/components/ui'
 import { useForm } from '@conform-to/react'
 import { parse } from '@conform-to/zod'
 import {
-  type ActionArgs,
-  type LoaderArgs,
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
   json,
   redirect,
 } from '@remix-run/node'
@@ -20,13 +20,13 @@ const schema = z.object({
     .max(2000, "Prompt can't be longer than 2000 characters"),
 })
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   await authenticator.isAuthenticated(request, { failureRedirect: '/' })
   const prompt = await getSystemPrompt()
   return json({ prompt })
 }
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   await authenticator.isAuthenticated(request, { failureRedirect: '/' })
 
   const formData = await request.formData()

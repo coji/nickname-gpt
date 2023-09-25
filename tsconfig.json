@@ -2,7 +2,7 @@
   "include": ["*", "app/**/*"],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2019"],
-    "types": ["vitest/globals"],
+    "types": ["web", "bun-types"],
     "isolatedModules": true,
     "skipLibCheck": true,
     "esModuleInterop": true,

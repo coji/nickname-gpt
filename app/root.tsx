@@ -1,7 +1,7 @@
 import {
   type LinksFunction,
-  type V2_MetaFunction,
-  type LoaderArgs,
+  type MetaFunction,
+  type LoaderFunctionArgs,
   json,
 } from '@remix-run/node'
 import {
@@ -20,7 +20,7 @@ export const links: LinksFunction = () => [
   { rel: 'stylesheet', href: globalCss },
 ]
 
-export const meta: V2_MetaFunction = () => [
+export const meta: MetaFunction = () => [
   { title: 'Nickname GPT' },
   { charSet: 'utf-8' },
   { name: 'viewport', content: 'width=device-width,initial-scale=1' },
@@ -37,7 +37,7 @@ export const Head = createHead(() => (
   </>
 ))
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const sessionUser = await authenticator.isAuthenticated(request)
   return json({ user: sessionUser })
 }
