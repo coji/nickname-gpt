@@ -89,7 +89,7 @@ jobs:
         run: bun run prisma migrate reset --force
 
       - name: ⚡ Run bun test
-        run: bun run test -- --coverage
+        run: bun run test:run
 
   build:
     name: 🐳 Build
