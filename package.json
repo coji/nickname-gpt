@@ -79,6 +79,6 @@
     "typescript": "5.2.2"
   },
   "prisma": {
-    "seed": "node --require tsconfig-paths/register prisma/seed.js"
+    "seed": "bun prisma/seed.ts"
   }
 }
