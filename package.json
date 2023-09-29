@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "sideEffects": false,
+  "type": "module",
   "scripts": {
     "build": "remix build",
     "deploy": "fly deploy --remote-only",
