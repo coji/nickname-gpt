@@ -1,8 +1,9 @@
 {
   "include": ["*", "app/**/*"],
+  "files": [".eslintrc.cjs"],
   "compilerOptions": {
-    "lib": ["DOM", "DOM.Iterable", "ES2019"],
-    "types": ["web", "bun-types"],
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "types": ["@types/node", "web", "bun-types"],
     "isolatedModules": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -10,7 +11,7 @@
     "module": "CommonJS",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "target": "ES2019",
+    "target": "ES2022",
     "strict": true,
     "allowJs": true,
     "forceConsistentCasingInFileNames": true,
