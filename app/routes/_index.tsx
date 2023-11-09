@@ -6,25 +6,23 @@ import { useGenerator } from '~/features/nickname/hooks/useGenerator'
 
 export default function Index() {
   const [isFirstView, setIsFirstView] = useState(true)
-  const openai = useGenerator('openai')
-  const azure = useGenerator('azure')
+  const openai = useGenerator()
 
-  const isLoading = openai.isLoading || azure.isLoading
+  const isLoading = openai.isLoading
 
   const handleFormSubmit = (formData: FormData) => {
     setIsFirstView(false)
     const input = String(formData.get('input'))
     void openai.generate(input)
-    void azure.generate(input)
   }
 
   return (
-    <div className="container grid grid-rows-[auto,auto,1fr,auto] h-screen">
+    <div className="container grid grid-rows-[auto,auto,1fr,auto] h-screen justify-center">
       <AppLoginPane className="text-right py-2" />
       <AppHeader layout={isFirstView ? 'normal' : 'shrink'} />
 
-      <main className="h-full p-2">
-        <Stack gap="16">
+      <main className="w-96 p-2">
+        <Stack gap="16" className="w-full">
           <form
             onSubmit={(e) => {
               e.preventDefault()
@@ -57,11 +55,13 @@ export default function Index() {
               <p>入力されたデータはどこにも一切保存されません。</p>
             </div>
           ) : (
-            <div className="grid grid-cols-[1fr_1fr] gap-4">
+            <div className="grid grid-cols-1 gap-4">
               <Stack>
                 <Heading size="md">
-                  OpenAI{' '}
-                  <span className="text-slate-500 text-xs">gpt-3.5-turbo</span>
+                  <span>OpenAI</span>
+                  <span className="ml-2 text-slate-500 text-xs">
+                    gpt-3.5-turbo
+                  </span>
                 </Heading>
                 {openai.isError && (
                   <div className="text-center text-destructive">
@@ -74,26 +74,6 @@ export default function Index() {
                     <div className="text-center text-slate-700">Loading...</div>
                   ) : (
                     openai.data && nl2br(openai.data)
-                  )}
-                </div>
-              </Stack>
-
-              <Stack>
-                <Heading size="md">
-                  Azure{' '}
-                  <span className="text-slate-500 text-xs">gpt-35-turbo</span>
-                </Heading>
-                {azure.isError && (
-                  <div className="text-center text-destructive">
-                    {azure.error}
-                  </div>
-                )}
-
-                <div>
-                  {azure.data === undefined && azure.isLoading ? (
-                    <div className="text-center text-slate-700">Loading...</div>
-                  ) : (
-                    azure.data && nl2br(azure.data)
                   )}
                 </div>
               </Stack>
