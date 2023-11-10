@@ -15,7 +15,7 @@ WORKDIR /app
 FROM base as deps
 
 COPY .npmrc pnpm-lock.yaml ./
-# ENV PRISMA_SKIP_POSTINSTALL_GENERATE=true
+ENV PRISMA_SKIP_POSTINSTALL_GENERATE=true
 RUN pnpm fetch
 
 # Setup production node_modules
@@ -23,14 +23,14 @@ FROM base as production-deps
 
 COPY --from=deps /app/node_modules /app/node_modules
 COPY .npmrc package.json pnpm-lock.yaml ./
-RUN pnpm install --prod --frozen-lockfile
+RUN pnpm install --prod --offline --frozen-lockfile
 
 # Build the app
 FROM base as build
 
 COPY --from=deps /app/node_modules /app/node_modules
 COPY .npmrc package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --offline --frozen-lockfile
 
 COPY . .
 RUN pnpm exec prisma generate \
@@ -42,10 +42,10 @@ FROM base
 
 ENV NODE_ENV "production"
 
-COPY --from=production-deps /app/node_modules /app/node_modules
-COPY --from=build /app/prisma /app/prisma
+COPY --from=build /app/node_modules /app/node_modules
 COPY --from=build /app/build /app/build
 COPY --from=build /app/public /app/public
+COPY --from=build /app/prisma /app/prisma
 COPY --from=build /app/package.json /app/package.json
 COPY --from=build /app/app /app/app
 
