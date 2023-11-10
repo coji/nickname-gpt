@@ -3,7 +3,7 @@
   "files": [".eslintrc.cjs"],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
-    "types": ["@types/node", "web", "bun-types"],
+    "types": ["@types/node"],
     "isolatedModules": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
