@@ -1,24 +1,17 @@
 import {
-  type LinksFunction,
   type MetaFunction,
   type LoaderFunctionArgs,
   json,
 } from '@remix-run/node'
 import {
-  Links,
   LiveReload,
-  Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
 } from '@remix-run/react'
-import { createHead } from 'remix-island'
+import { Head } from './head'
 import { authenticator } from './services/auth.server'
-import globalCss from './styles/globals.css'
-
-export const links: LinksFunction = () => [
-  { rel: 'stylesheet', href: globalCss },
-]
+import './styles/globals.css'
 
 export const meta: MetaFunction = () => [
   { title: 'Nickname GPT' },
@@ -29,13 +22,6 @@ export const meta: MetaFunction = () => [
     content: 'AI generates nicknames from IDs and email addresses.',
   },
 ]
-
-export const Head = createHead(() => (
-  <>
-    <Meta />
-    <Links />
-  </>
-))
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const sessionUser = await authenticator.isAuthenticated(request)

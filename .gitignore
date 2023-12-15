@@ -31,6 +31,4 @@ yarn-error.log*
 !.env.vault
 
 postgres-data
-/.cache
-/public/build
 data

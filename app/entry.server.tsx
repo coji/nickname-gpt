@@ -5,7 +5,7 @@ import isbot from 'isbot'
 import { renderToPipeableStream } from 'react-dom/server'
 import { renderHeadToString } from 'remix-island'
 import { PassThrough } from 'stream'
-import { Head } from './root'
+import { Head } from './head'
 
 const ABORT_DELAY = 5000
 
