@@ -1,3 +1,4 @@
-export { AppFooter } from './AppFooter'
-export { AppHeader } from './AppHeader'
-export { AppLoginPane } from './AppLoginPane'
+export * from './AppFooter'
+export * from './AppHeader'
+export * from './AppLoginPane'
+export * from './AppShell'
