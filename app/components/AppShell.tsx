@@ -6,7 +6,7 @@ export const AppShell = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={twMerge(
-      'container grid grid-rows-[auto,auto,1fr,auto] h-screen justify-center',
+      'container grid grid-rows-[auto,auto,1fr,auto] h-screen',
       className,
     )}
     {...rest}

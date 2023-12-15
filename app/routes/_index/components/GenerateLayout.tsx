@@ -5,7 +5,10 @@ export const GenerateLayout = ({
   children,
   ...rest
 }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div className={twMerge('grid grid-cols-1 gap-4', className)} {...rest}>
+  <div
+    className={twMerge('grid grid-cols-2 gap-4 w-full', className)}
+    {...rest}
+  >
     {children}
   </div>
 )

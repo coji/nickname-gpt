@@ -1,26 +1,35 @@
-import { GoogleGenerativeAI, type InputContent } from '@google/generative-ai'
+import {
+  GoogleGenerativeAI,
+  type EnhancedGenerateContentResponse,
+} from '@google/generative-ai'
 
 const api = new GoogleGenerativeAI(process.env.GEMINIPRO_API_KEY!)
 const model = api.getGenerativeModel({ model: 'models/gemini-pro' })
 
 interface GeminiChatStreamOptions {
   prompt: string
-  history: InputContent[]
-  temperature: number
-  maxOutputTokens: number
 }
-export const GeminiChatStream = async ({
-  prompt,
-  history,
-  temperature,
-  maxOutputTokens,
-}: GeminiChatStreamOptions) => {
-  const chat = model.startChat({
-    generationConfig: { candidateCount: 1, maxOutputTokens, temperature },
-    history,
+export const GeminiChatStream = async ({ prompt }: GeminiChatStreamOptions) => {
+  const result = await model.generateContentStream(prompt)
+
+  const stream = new ReadableStream({
+    async pull(controller) {
+      const { value, done } = await result.stream.next()
+
+      if (done) {
+        controller.close()
+      } else {
+        const chunk = value as EnhancedGenerateContentResponse
+        controller.enqueue(chunk.text())
+      }
+    },
   })
 
-  const result = await chat.sendMessageStream(prompt)
-  const response = await result.response
-  return response
+  return new Response(stream, {
+    headers: {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      Connection: 'keep-alive',
+    },
+  })
 }

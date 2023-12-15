@@ -14,13 +14,15 @@ import {
 export default function Index() {
   const [isFirstView, setIsFirstView] = useState(true)
   const openaiGenerator = useGenerator()
+  const geminiGenerator = useGenerator()
 
-  const isLoading = openaiGenerator.isLoading
+  const isLoading = openaiGenerator.isLoading || geminiGenerator.isLoading
 
   const handleFormSubmit = (formData: FormData) => {
     setIsFirstView(false)
     const input = String(formData.get('input'))
-    void openaiGenerator.generate(input)
+    void openaiGenerator.generate('openai', input)
+    void geminiGenerator.generate('google', input)
   }
 
   return (
@@ -28,8 +30,8 @@ export default function Index() {
       <AppLoginPane className="text-right py-2" />
       <AppHeader layout={isFirstView ? 'normal' : 'shrink'} />
 
-      <main className="w-96 p-2">
-        <Stack gap="16" className="w-full">
+      <main className="w-full p-2">
+        <Stack>
           <NicknameInputForm
             onSubmit={(e) => {
               e.preventDefault()
@@ -43,24 +45,36 @@ export default function Index() {
             <BodyCopy />
           ) : (
             <GenerateLayout>
-              <Stack>
+              <Stack className="w-full">
                 <GenerateHeader provider="OpenAI" model="gpt-3.5-turbo" />
                 {openaiGenerator.isError && (
                   <GenerateError> {openaiGenerator.error}</GenerateError>
                 )}
 
-                <div>
-                  {openaiGenerator.data === undefined &&
-                    openaiGenerator.isLoading && (
-                      <div className="text-center text-slate-700">
-                        Loading...
-                      </div>
-                    )}
-
-                  {openaiGenerator.data && (
-                    <GenerateContent content={openaiGenerator.data} />
+                {openaiGenerator.data === undefined &&
+                  openaiGenerator.isLoading && (
+                    <div className="text-center text-slate-700">Loading...</div>
                   )}
-                </div>
+
+                {openaiGenerator.data && (
+                  <GenerateContent content={openaiGenerator.data} />
+                )}
+              </Stack>
+
+              <Stack className="w-full">
+                <GenerateHeader provider="Google" model="gemini-pro" />
+                {geminiGenerator.isError && (
+                  <GenerateError> {geminiGenerator.error}</GenerateError>
+                )}
+
+                {geminiGenerator.data === undefined &&
+                  geminiGenerator.isLoading && (
+                    <div className="text-center text-slate-700">Loading...</div>
+                  )}
+
+                {geminiGenerator.data && (
+                  <GenerateContent content={geminiGenerator.data} />
+                )}
               </Stack>
             </GenerateLayout>
           )}

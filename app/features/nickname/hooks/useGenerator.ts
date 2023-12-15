@@ -15,11 +15,12 @@ export const useGenerator = () => {
     isSuccess: false,
   })
 
-  const generate = async (input: string) => {
+  const generate = async (provider: 'openai' | 'google', input: string) => {
     setState({ isLoading: true, isError: false, isSuccess: false })
     setData(undefined)
 
     const formData = new FormData()
+    formData.set('provider', provider)
     formData.set('input', input)
 
     try {
@@ -46,6 +47,7 @@ export const useGenerator = () => {
 
       while (!done) {
         const { value, done: doneReading } = await reader.read()
+        console.log({ value })
         done = doneReading
         const chunkValue = decoder.decode(value)
         setData((prev) => (prev ?? '') + chunkValue)
