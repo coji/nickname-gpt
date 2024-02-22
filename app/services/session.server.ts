@@ -26,5 +26,5 @@ export const sessionStorage = createCookieSessionStorage<SessionUser>({
 
 export const getSession = async (request: Request) => {
   const cookie = request.headers.get('Cookie')
-  return sessionStorage.getSession(cookie)
+  return await sessionStorage.getSession(cookie)
 }

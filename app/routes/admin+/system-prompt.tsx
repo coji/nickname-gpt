@@ -1,15 +1,15 @@
-import { ArrowLeftIcon } from 'lucide-react'
-import { Button, HStack, Heading, Textarea } from '~/components/ui'
-import { useForm, getFormProps, getTextareaProps } from '@conform-to/react'
+import { getFormProps, getTextareaProps, useForm } from '@conform-to/react'
 import { parseWithZod } from '@conform-to/zod'
 import {
-  type ActionFunctionArgs,
-  type LoaderFunctionArgs,
   json,
   redirect,
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
 } from '@remix-run/node'
 import { Form, Link, useActionData, useLoaderData } from '@remix-run/react'
+import { ArrowLeftIcon } from 'lucide-react'
 import { z } from 'zod'
+import { Button, HStack, Heading, Textarea } from '~/components/ui'
 import { getSystemPrompt, upsertSystemPrompt } from '~/models/prompts.server'
 import { authenticator } from '~/services/auth.server'
 
@@ -46,13 +46,12 @@ export default function AdminIndexPage() {
     lastResult,
     defaultValue: loaderData,
     shouldValidate: 'onBlur',
-    onValidate: ({ formData }) => parseWithZod(formData, { schema })
-
+    onValidate: ({ formData }) => parseWithZod(formData, { schema }),
   })
 
   return (
-    <div className="container grid grid-rows-[auto,1fr] min-h-screen">
-      <HStack className="py-4 gap-4">
+    <div className="container grid min-h-screen grid-rows-[auto,1fr]">
+      <HStack className="gap-4 py-4">
         <Button asChild variant="ghost" size="icon" className="rounded-full">
           <Link to="/">
             <ArrowLeftIcon />
@@ -62,12 +61,9 @@ export default function AdminIndexPage() {
       </HStack>
 
       <Form method="POST" {...getFormProps(form)}>
-        <div className="flex flex-col h-full pb-4 gap-2">
-          <fieldset className="flex flex-col flex-1">
-            <Textarea
-              className="flex-1"
-              {...getTextareaProps(prompt)}
-            />
+        <div className="flex h-full flex-col gap-2 pb-4">
+          <fieldset className="flex flex-1 flex-col">
+            <Textarea className="flex-1" {...getTextareaProps(prompt)} />
             <p className="text-destructive">{prompt.errors}</p>
           </fieldset>
 

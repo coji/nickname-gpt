@@ -1,21 +1,21 @@
-import { type EntryContext } from '@remix-run/node'
-import { Response } from '@remix-run/web-fetch'
+import { PassThrough } from 'node:stream'
+
+import type { AppLoadContext, EntryContext } from '@remix-run/node'
+import { createReadableStreamFromReadable } from '@remix-run/node'
 import { RemixServer } from '@remix-run/react'
-import { isbot } from 'isbot'
+import * as isbotModule from 'isbot'
 import { renderToPipeableStream } from 'react-dom/server'
-import { renderHeadToString } from 'remix-island'
-import { PassThrough } from 'stream'
-import { Head } from './head'
 
-const ABORT_DELAY = 5000
+const ABORT_DELAY = 5_000
 
-const handleRequest = (
+export default function handleRequest(
   request: Request,
   responseStatusCode: number,
   responseHeaders: Headers,
   remixContext: EntryContext,
-) =>
-  isbot(request.headers.get('user-agent'))
+  loadContext: AppLoadContext,
+) {
+  return isBotRequest(request.headers.get('user-agent'))
     ? handleBotRequest(
         request,
         responseStatusCode,
@@ -28,91 +28,127 @@ const handleRequest = (
         responseHeaders,
         remixContext,
       )
-export default handleRequest
+}
 
-const handleBotRequest = (
+// We have some Remix apps in the wild already running with isbot@3 so we need
+// to maintain backwards compatibility even though we want new apps to use
+// isbot@4.  That way, we can ship this as a minor Semver update to @remix-run/dev.
+function isBotRequest(userAgent: string | null) {
+  if (!userAgent) {
+    return false
+  }
+
+  // isbot >= 3.8.0, >4
+  if ('isbot' in isbotModule && typeof isbotModule.isbot === 'function') {
+    return isbotModule.isbot(userAgent)
+  }
+
+  // isbot < 3.8.0
+  if ('default' in isbotModule && typeof isbotModule.default === 'function') {
+    return isbotModule.default(userAgent)
+  }
+
+  return false
+}
+
+function handleBotRequest(
   request: Request,
   responseStatusCode: number,
   responseHeaders: Headers,
   remixContext: EntryContext,
-) =>
-  new Promise((resolve, reject) => {
-    let didError = false
-
-    const stream = renderToPipeableStream(
-      <RemixServer context={remixContext} url={request.url} />,
+) {
+  let statusCode = responseStatusCode
+  return new Promise((resolve, reject) => {
+    let shellRendered = false
+    const { pipe, abort } = renderToPipeableStream(
+      <RemixServer
+        context={remixContext}
+        url={request.url}
+        abortDelay={ABORT_DELAY}
+      />,
       {
-        onAllReady: () => {
-          const head = renderHeadToString({ request, remixContext, Head })
+        onAllReady() {
+          shellRendered = true
           const body = new PassThrough()
+          const stream = createReadableStreamFromReadable(body)
 
           responseHeaders.set('Content-Type', 'text/html')
 
           resolve(
-            new Response(body, {
+            new Response(stream, {
               headers: responseHeaders,
-              status: didError ? 500 : responseStatusCode,
+              status: statusCode,
             }),
           )
-          const bodyWithStyles = `<!DOCTYPE html><html><head>${head}</head><body><div id="root">`
 
-          body.write(bodyWithStyles)
-          stream.pipe(body)
-          body.write(`</div></body></html>`)
+          pipe(body)
         },
-        onShellError: (error: unknown) => {
+        onShellError(error: unknown) {
           reject(error)
         },
-        onError: (error: unknown) => {
-          didError = true
-          console.error(error)
+        onError(error: unknown) {
+          statusCode = 500
+          // Log streaming rendering errors from inside the shell.  Don't log
+          // errors encountered during initial shell rendering since they'll
+          // reject and get logged in handleDocumentRequest.
+          if (shellRendered) {
+            console.error(error)
+          }
         },
       },
     )
 
-    setTimeout(() => stream.abort(), ABORT_DELAY)
+    setTimeout(abort, ABORT_DELAY)
   })
+}
 
-const handleBrowserRequest = (
+function handleBrowserRequest(
   request: Request,
   responseStatusCode: number,
   responseHeaders: Headers,
   remixContext: EntryContext,
-) =>
-  new Promise((resolve, reject) => {
-    let didError = false
-
-    const stream = renderToPipeableStream(
-      <RemixServer context={remixContext} url={request.url} />,
+) {
+  let statusCode = responseStatusCode
+  return new Promise((resolve, reject) => {
+    let shellRendered = false
+    const { pipe, abort } = renderToPipeableStream(
+      <RemixServer
+        context={remixContext}
+        url={request.url}
+        abortDelay={ABORT_DELAY}
+      />,
       {
-        onShellReady: () => {
-          const head = renderHeadToString({ request, remixContext, Head })
+        onShellReady() {
+          shellRendered = true
           const body = new PassThrough()
+          const stream = createReadableStreamFromReadable(body)
 
           responseHeaders.set('Content-Type', 'text/html')
 
           resolve(
-            new Response(body, {
+            new Response(stream, {
               headers: responseHeaders,
-              status: didError ? 500 : responseStatusCode,
+              status: statusCode,
             }),
           )
 
-          const bodyWithStyles = `<!DOCTYPE html><html><head>${head}</head><body><div id="root">`
-          body.write(bodyWithStyles)
-          stream.pipe(body)
-          body.write(`</div></body></html>`)
+          pipe(body)
         },
-        onShellError: (error: unknown) => {
+        onShellError(error: unknown) {
           reject(error)
         },
-        onError: (error: unknown) => {
-          didError = true
-
-          console.error(error)
+        onError(error: unknown) {
+          statusCode = 500
+          // Log streaming rendering errors from inside the shell.  Don't log
+          // errors encountered during initial shell rendering since they'll
+          // reject and get logged in handleDocumentRequest.
+          if (shellRendered) {
+            console.error(error)
+          }
         },
       },
     )
 
-    setTimeout(() => stream.abort(), ABORT_DELAY)
+    setTimeout(abort, ABORT_DELAY)
   })
+}

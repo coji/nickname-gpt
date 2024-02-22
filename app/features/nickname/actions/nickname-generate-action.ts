@@ -34,9 +34,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         },
       )
       return stream
-    } else if (provider === 'google') {
+    }
+    if (provider === 'google') {
       const stream = await GeminiChatStream({
-        prompt: systemPrompt + '\nuser input: ' + input + '\n\n output:',
+        prompt: `${systemPrompt}\nuser input: ${input}\n\n output:`,
       })
       return stream
     }

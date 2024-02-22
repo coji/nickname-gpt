@@ -12,6 +12,6 @@ export const GenerateHeader = ({
 }: GenerateHeaderProps) => (
   <Heading size="md" {...rest}>
     <span>{provider}</span>
-    <span className="ml-2 text-slate-500 text-xs">{model}</span>
+    <span className="ml-2 text-xs text-slate-500">{model}</span>
   </Heading>
 )

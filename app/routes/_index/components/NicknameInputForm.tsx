@@ -1,4 +1,4 @@
-import { HStack, Input, Button } from '~/components/ui'
+import { Button, HStack, Input } from '~/components/ui'
 
 interface NicknameInputFormProps extends React.HTMLAttributes<HTMLFormElement> {
   isLoading: boolean

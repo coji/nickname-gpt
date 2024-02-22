@@ -1,6 +1,6 @@
 export const AppFooter = () => {
   return (
-    <footer className="text-center p-2 pt-8">
+    <footer className="p-2 pt-8 text-center">
       <div>
         Copyright ©{' '}
         <a

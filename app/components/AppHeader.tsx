@@ -8,7 +8,7 @@ export const AppHeader = ({ layout = 'normal', ...rest }: AppHeaderProps) => {
   return (
     <header {...rest}>
       <Heading
-        className={`transition-transform duration-1000 text-center ${
+        className={`text-center transition-transform duration-1000 ${
           layout === 'normal' ? 'py-16' : 'py-2'
         }`}
       >

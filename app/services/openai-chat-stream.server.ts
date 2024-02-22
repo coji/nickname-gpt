@@ -97,7 +97,7 @@ export const OpenAIChatStream = async (
       }
 
       const parser = createParser(onEvent)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
       for await (const chunk of res.body as any) {
         parser.feed(decoder.decode(chunk as BufferSource | undefined))
       }

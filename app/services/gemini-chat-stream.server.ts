@@ -3,6 +3,7 @@ import {
   type EnhancedGenerateContentResponse,
 } from '@google/generative-ai'
 
+// biome-ignore lint/style/noNonNullAssertion: <explanation>
 const api = new GoogleGenerativeAI(process.env.GEMINIPRO_API_KEY!)
 const model = api.getGenerativeModel({ model: 'models/gemini-pro' })
 

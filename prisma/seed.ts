@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import fs from 'fs/promises'
 import { PrismaClient } from '@prisma/client'
+import fs from 'fs/promises'
 
 const prisma = new PrismaClient()
 
@@ -14,7 +14,7 @@ async function seed() {
     create: { type: 'system', text: systemPrompt },
     update: { type: 'system', text: systemPrompt },
   })
-  console.log(`Database has been seeded. 🌱`)
+  console.log('Database has been seeded. 🌱')
 }
 
 seed().catch((e) => {

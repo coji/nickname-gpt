@@ -1,17 +1,18 @@
 import {
-  type MetaFunction,
-  type LoaderFunctionArgs,
   json,
+  LinksFunction,
+  type LoaderFunctionArgs,
+  type MetaFunction,
 } from '@remix-run/node'
 import {
-  LiveReload,
+  Links,
+  Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
 } from '@remix-run/react'
-import { Head } from './head'
 import { authenticator } from './services/auth.server'
-import './styles/globals.css'
+import globalStyles from './styles/globals.css?url'
 
 export const meta: MetaFunction = () => [
   { title: 'Nickname GPT' },
@@ -23,6 +24,10 @@ export const meta: MetaFunction = () => [
   },
 ]
 
+export const links: LinksFunction = () => [
+  { rel: 'stylesheet', href: globalStyles },
+]
+
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const sessionUser = await authenticator.isAuthenticated(request)
   return json({ user: sessionUser })
@@ -30,12 +35,18 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export default function App() {
   return (
-    <>
-      <Head />
-      <Outlet />
-      <ScrollRestoration />
-      <Scripts />
-      <LiveReload />
-    </>
+    <html lang="en">
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <Meta />
+        <Links />
+      </head>
+      <body>
+        <Outlet />
+        <ScrollRestoration />
+        <Scripts />
+      </body>
+    </html>
   )
 }

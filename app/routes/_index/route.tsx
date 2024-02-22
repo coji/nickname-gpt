@@ -1,14 +1,14 @@
-import { Stack } from '~/components/ui'
 import { useState } from 'react'
-import { AppShell, AppFooter, AppHeader, AppLoginPane } from '~/components'
+import { AppFooter, AppHeader, AppLoginPane, AppShell } from '~/components'
+import { Stack } from '~/components/ui'
 import { useGenerator } from '~/features/nickname/hooks/useGenerator'
 import {
-  NicknameInputForm,
   BodyCopy,
-  GenerateLayout,
-  GenerateHeader,
-  GenerateError,
   GenerateContent,
+  GenerateError,
+  GenerateHeader,
+  GenerateLayout,
+  NicknameInputForm,
 } from './components'
 
 export default function Index() {
@@ -27,7 +27,7 @@ export default function Index() {
 
   return (
     <AppShell>
-      <AppLoginPane className="text-right py-2" />
+      <AppLoginPane className="py-2 text-right" />
       <AppHeader layout={isFirstView ? 'normal' : 'shrink'} />
 
       <main className="w-full p-2">

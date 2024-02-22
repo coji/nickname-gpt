@@ -1,5 +1,7 @@
 export default {
   semi: false,
-  trailingComma: 'all',
   singleQuote: true,
+  trailingComma: 'all',
+  plugins: ['prettier-plugin-organize-imports', 'prettier-plugin-tailwindcss'],
+  tailwindFunctions: ['twMerge'],
 }

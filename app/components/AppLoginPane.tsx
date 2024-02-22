@@ -1,14 +1,14 @@
+import { Link, useNavigation } from '@remix-run/react'
 import {
   Avatar,
   AvatarImage,
   Button,
   DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-  DropdownMenuItem,
   DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from '~/components/ui'
-import { Link, useNavigation } from '@remix-run/react'
 import { useSessionUser } from '~/hooks/use-session-user'
 
 export const AppLoginPane = (props: React.HTMLAttributes<HTMLDivElement>) => {
