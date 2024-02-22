@@ -1,14 +1,14 @@
 import { ArrowLeftIcon } from 'lucide-react'
 import { Button, HStack, Heading, Textarea } from '~/components/ui'
-import { useForm } from '@conform-to/react'
-import { parse } from '@conform-to/zod'
+import { useForm, getFormProps, getTextareaProps } from '@conform-to/react'
+import { parseWithZod } from '@conform-to/zod'
 import {
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
   json,
   redirect,
 } from '@remix-run/node'
-import { Form, Link, useLoaderData } from '@remix-run/react'
+import { Form, Link, useActionData, useLoaderData } from '@remix-run/react'
 import { z } from 'zod'
 import { getSystemPrompt, upsertSystemPrompt } from '~/models/prompts.server'
 import { authenticator } from '~/services/auth.server'
@@ -30,9 +30,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   await authenticator.isAuthenticated(request, { failureRedirect: '/' })
 
   const formData = await request.formData()
-  const submission = parse(formData, { schema })
-  if (!submission.value) {
-    return json({ ...submission }, { status: 400 })
+  const submission = parseWithZod(formData, { schema })
+  if (submission.status !== 'success') {
+    return json(submission.reply())
   }
 
   await upsertSystemPrompt(submission.value.prompt)
@@ -41,12 +41,13 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 export default function AdminIndexPage() {
   const loaderData = useLoaderData<typeof loader>()
+  const lastResult = useActionData<typeof action>()
   const [form, { prompt }] = useForm({
+    lastResult,
     defaultValue: loaderData,
     shouldValidate: 'onBlur',
-    onValidate({ formData }) {
-      return parse(formData, { schema })
-    },
+    onValidate: ({ formData }) => parseWithZod(formData, { schema })
+
   })
 
   return (
@@ -60,16 +61,14 @@ export default function AdminIndexPage() {
         <Heading>システムプロンプトの編集</Heading>
       </HStack>
 
-      <Form method="POST" {...form.props}>
+      <Form method="POST" {...getFormProps(form)}>
         <div className="flex flex-col h-full pb-4 gap-2">
           <fieldset className="flex flex-col flex-1">
             <Textarea
               className="flex-1"
-              id="prompt"
-              name="prompt"
-              defaultValue={prompt.defaultValue}
+              {...getTextareaProps(prompt)}
             />
-            <p className="text-destructive">{prompt.error}</p>
+            <p className="text-destructive">{prompt.errors}</p>
           </fieldset>
 
           <HStack>
